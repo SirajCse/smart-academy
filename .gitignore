@@ -1,3 +1,5 @@
 /.idea
 /backend/captcha_images
 /backend/captcha_images
+/application/config/config.php
+/application/config/database.php
