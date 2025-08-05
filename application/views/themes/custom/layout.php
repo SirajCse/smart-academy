@@ -43,10 +43,7 @@
     <?php $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
 
     <!-- Vendor JS Files -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-        var base_url = "<?php echo base_url() ?>";
-    </script>
+
 
 </head>
 <body>

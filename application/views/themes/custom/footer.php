@@ -107,6 +107,10 @@ if (!empty($cookie_consent)) {?>
     <i class="fa fa-angle-up"></i>
 </a>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    var base_url = "<?php echo base_url() ?>";
+</script>
 
 <script>
     function setsitecookies() {
