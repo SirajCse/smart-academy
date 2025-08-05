@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>
-        <?= ($page['title'] ?? '') . ' | ' . $this->customlib->getAppName(); ?>
+        <?= ($page['title'] ?? '') . ' | ' . ($school_setting->name ?? '') ?>
     </title>
 
     <meta name="title" content="<?= htmlspecialchars($page['meta_title'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
@@ -13,9 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Favicons -->
     <link rel="shortcut icon" href="<?= base_url(ltrim($front_setting->fav_icon ?? '', './')) ?>" type="image/x-icon">
-    <script type="text/javascript">
-        var base_url = "<?php echo base_url() ?>";
-    </script>
+
 
     <!-- Bootstrap CSS (with integrity for security) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -173,7 +171,9 @@
 
 <?php echo $footer ?? ''; ?>
 
-<!-- Vendor JS Files -->
+<script type="text/javascript">
+    var base_url = "<?php echo base_url() ?>";
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>

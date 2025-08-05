@@ -9,13 +9,13 @@
                         <a href="<?php echo base_url() ?>">
                             <img class="logo"
                                  src="<?= base_url(ltrim($front_setting->logo ?? '', './')) ?>"
-                                 alt="<?= $this->customlib->getAppName() ?? ''; ?>">
+                                 alt="<?= $school_setting->name ?? '' ?>">
                         </a>
                     </div>
                     <div class="col-8">
                         <div class="header_information text-center">
                             <div class="title_conteiner">
-                                <h1 id="marqueeText" class="marquee header_title"><a href="<?php echo base_url() ?>"><?= $this->customlib->getAppName() ?? ''; ?></a></h1>
+                                <h1 id="marqueeText" class="header_title"><a href="<?php echo base_url() ?>"><?= $this->customlib->getAppName() ?? ''; ?></a></h1>
                             </div>
                             <div class="d-none d-md-block">
                                 <h2></h2>
