@@ -10,8 +10,12 @@ $(document).ready(function() {
         }
     }
 
-    window.addEventListener("load", checkOverflow);
+// Run on page load
+    checkOverflow();
+
+// Run again on resize/orientation change
     window.addEventListener("resize", checkOverflow);
+    window.addEventListener("orientationchange", checkOverflow);
 
     // Handle navbar open/close
     $('.navbar-open, .mobile-nav-toggle').on('click', function () {

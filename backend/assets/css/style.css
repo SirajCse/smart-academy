@@ -1576,3 +1576,17 @@ Notice Single
     max-height: 500px;   /* Limit height */
     object-fit: cover;   /* Crop image if taller than 400px */
 }
+.marquee {
+    display: inline-block;
+    animation: scroll-left 8s linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes scroll-left {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
