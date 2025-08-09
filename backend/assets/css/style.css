@@ -1570,3 +1570,9 @@ Notice Single
 .gallery-card:hover .gallery-overlay {
     opacity: 1;
 }
+
+.carousel-item img {
+    width: 100%;         /* Full screen width */
+    max-height: 500px;   /* Limit height */
+    object-fit: cover;   /* Crop image if taller than 400px */
+}

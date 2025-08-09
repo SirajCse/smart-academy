@@ -1,18 +1,5 @@
 $(document).ready(function() {
 
-    const marqueeText = document.getElementById("marqueeText");
-
-    function checkOverflow() {
-        if (marqueeText.scrollWidth > marqueeText.clientWidth) {
-            marqueeText.classList.add("marquee");
-        } else {
-            marqueeText.classList.remove("marquee");
-        }
-    }
-
-    window.addEventListener("load", checkOverflow);
-    window.addEventListener("resize", checkOverflow);
-
     // Handle navbar open/close
     $('.navbar-open, .mobile-nav-toggle').on('click', function () {
         $('#navbar').toggleClass('navbar-mobile');
