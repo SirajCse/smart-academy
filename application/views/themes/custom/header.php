@@ -15,7 +15,7 @@
                     <div class="col-8">
                         <div class="header_information text-center">
                             <div class="title_conteiner">
-                                <h1 class="header_title"><a href="<?php echo base_url() ?>"><?= $school_setting->name ?? '' ?></a></h1>
+                                <h1 id="marqueeText" class="marquee header_title"><a href="<?php echo base_url() ?>"><?= $school_setting->name ?? '' ?></a></h1>
                             </div>
                             <div class="d-none d-md-block">
                                 <h2></h2>
