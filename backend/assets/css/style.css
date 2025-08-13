@@ -1594,3 +1594,8 @@ Notice Single
     box-shadow: -15px 0 10px 0 rgba(62, 76, 68, 0.5),
     15px 0 10px 0 rgba(35, 50, 41, 0.5);
 }
+.carousel-indicators [data-bs-target] {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%; /* Makes it a perfect circle */
+}
