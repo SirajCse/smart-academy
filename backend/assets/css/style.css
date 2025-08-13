@@ -1590,3 +1590,7 @@ Notice Single
         transform: translateX(-100%);
     }
 }
+.container {
+    box-shadow: -15px 0 10px 0 rgba(62, 76, 68, 0.5),
+    15px 0 10px 0 rgba(35, 50, 41, 0.5);
+}
