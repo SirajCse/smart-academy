@@ -90,10 +90,10 @@
             <?php if (isset($page_side_bar) && ($page_side_bar)) : ?>
                 <div class="col-md-4 mt-3">
 
-                    <div class="tt_notice4">
+                    <div class="tt-card mt-3">
                         <!--নোটিশ বোর্ড -->
-                        <h3><?php echo $this->lang->line('notice_board'); ?></h3>
-                        <div class="notice_body">
+                        <h3 class="bg-warning"><?php echo $this->lang->line('notice_board'); ?></h3>
+                        <div class="tt-card-body notice_body">
                             <ul class="list-group list-group-flush">
                                 <?php if (!empty($banner_notices)) { ?>
                                     <?php foreach ($banner_notices as $notice) { ?>
@@ -157,10 +157,157 @@
                         <h3>আমাদের ফেসবুক পেইজ</h3>
                         <div class="tt-card-body">
                             <div class="quice_links text-center">
-                                <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Ffacebook.com%2Ftechtarangabd%2F&tabs=timeline&width=340&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
-                                        width="340" height="500" style="border:none;overflow:hidden" scrolling="no"
-                                        frameborder="0" allowfullscreen="true"
-                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                                <?php if (!empty($front_setting->fb_url)): ?>
+                                    <iframe
+                                            src="<?php echo $front_setting->fb_url; ?>"
+                                            width="340"
+                                            height="500"
+                                            style="border:none;overflow:hidden"
+                                            scrolling="no"
+                                            frameborder="0"
+                                            loading="lazy"
+                                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                            referrerpolicy="no-referrer-when-downgrade"
+                                            title="Facebook Feed">
+                                    </iframe>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tt-card py-3 rounded-3">
+                        <h3 class="text-center mb-3">
+                            <i class="fas fa-phone-alt me-2 text-muted"></i>জরুরি হটলাইন
+                        </h3>
+
+                        <div class="d-flex flex-wrap justify-content-center align-items-center tt-card-body" style="gap: 15px;">
+                            <!-- 333 -->
+                            <div class="hotline-logo-container">
+                                <a href="https://333.gov.bd/" class="hotline-logo" target="_blank" title="333 Emergency">
+                                    <img src="<?= base_url('backend/assets/hot-line/333.png'); ?>"
+                                         alt="333"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- 999 -->
+                            <div class="hotline-logo-container">
+                                <a href="https://www.999.gov.bd/" class="hotline-logo" target="_blank" title="999 Emergency">
+                                    <img src="<?= base_url('backend/assets/hot-line/999.png'); ?>" alt="999"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Fire Service -->
+                            <div class="hotline-logo-container">
+                                <a href="https://fireservice.gov.bd/" class="hotline-logo" target="_blank" title="Fire Service">
+                                    <img src="<?= base_url('backend/assets/hot-line/102.png'); ?>" alt="Fire Service"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Women & Children Affairs -->
+                            <div class="hotline-logo-container">
+                                <a href="https://mowca.gov.bd/" class="hotline-logo" target="_blank" title="Women & Children Affairs">
+                                    <img src="<?= base_url('backend/assets/hot-line/109.png'); ?>"
+                                         alt="Women & Children Affairs"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Anti-Corruption -->
+                            <div class="hotline-logo-container">
+                                <a href="https://www.acc.org.bd/" class="hotline-logo" target="_blank" title="Anti-Corruption Commission">
+                                    <img src="<?= base_url('backend/assets/hot-line/106.png'); ?>"
+                                         alt="Anti-Corruption Commission"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Disaster Management -->
+                            <div class="hotline-logo-container">
+                                <a href="http://www.ddm.gov.bd" class="hotline-logo" target="_blank" title="Disaster Management">
+                                    <img src="<?= base_url('backend/assets/hot-line/1090.png'); ?>"
+                                         alt="Disaster Management"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Land -->
+                            <div class="hotline-logo-container">
+                                <a href="https://land.gov.bd/" class="hotline-logo" target="_blank" title="Land Ministry">
+                                    <img src="<?= base_url('backend/assets/hot-line/16122.png'); ?>"
+                                         alt="Land Ministry"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Social Welfare -->
+                            <div class="hotline-logo-container">
+                                <a href="https://msw.portal.gov.bd" class="hotline-logo" target="_blank" title="Social Welfare">
+                                    <img src="<?= base_url('backend/assets/hot-line/1098.png'); ?>"
+                                         alt="Social Welfare"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- BKKB -->
+                            <div class="hotline-logo-container">
+                                <a href="https://bkkb.gov.bd/" class="hotline-logo" target="_blank" title="BKKB">
+                                    <img src="<?= base_url('backend/assets/hot-line/16109.png'); ?>"
+                                         alt="BKKB"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Narcotics Control -->
+                            <div class="hotline-logo-container">
+                                <a href="https://www.dnc.gov.bd/" class="hotline-logo" target="_blank" title="Narcotics Control">
+                                    <img src="<?= base_url('backend/assets/hot-line/madok.png'); ?>"
+                                         alt="Narcotics Control"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- BIWTA -->
+                            <div class="hotline-logo-container">
+                                <a href="https://biwta.gov.bd/" class="hotline-logo" target="_blank" title="BIWTA">
+                                    <img src="<?= base_url('backend/assets/hot-line/16113.png'); ?>"
+                                         alt="BIWTA"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Power Division -->
+                            <div class="hotline-logo-container">
+                                <a href="http://www.powerdivision.gov.bd/" class="hotline-logo" target="_blank" title="Power Division">
+                                    <img src="<?= base_url('backend/assets/hot-line/16999.png'); ?>" alt="Power Division"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- Legal Aid -->
+                            <div class="hotline-logo-container">
+                                <a href="https://nlaso.gov.bd" class="hotline-logo" target="_blank" title="Legal Aid">
+                                    <img src="<?= base_url('backend/assets/hot-line/16430.png'); ?>" alt="Legal Aid"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- InfoCom -->
+                            <div class="hotline-logo-container">
+                                <a href="https://infocom.gov.bd" class="hotline-logo" target="_blank" title="InfoCom">
+                                    <img src="<?= base_url('backend/assets/hot-line/16135.png'); ?>" alt="InfoCom"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
+                            </div>
+
+                            <!-- NPA -->
+                            <div class="hotline-logo-container">
+                                <a href="https://npa.gov.bd/" class="hotline-logo" target="_blank" title="NPA">
+                                    <img src="<?= base_url('backend/assets/hot-line/16131.png'); ?>" alt="NPA"
+                                         class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
+                                </a>
                             </div>
                         </div>
                     </div>

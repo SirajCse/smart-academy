@@ -1599,3 +1599,21 @@ Notice Single
     height: 8px;
     border-radius: 50%; /* Makes it a perfect circle */
 }
+
+.hotline-logo-container {
+    width: 100px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hotline-logo {
+    transition: all 0.3s ease;
+}
+.hotline-logo:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+.tt-card-body {
+    margin: -5px;
+}
