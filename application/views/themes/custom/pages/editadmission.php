@@ -1,3 +1,7 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
 <?php
 if (!$form_admission) {
     ?>
@@ -59,7 +63,7 @@ if ($this->session->flashdata('msg')) {
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label><?php echo $this->lang->line('first_name'); ?></label><small class="req"> *</small>
+                    <label><?php echo $this->lang->line('full_name'); ?></label><small class="req"> *</small>
                     <input id="firstname" name="firstname" placeholder="" type="text" class="form-control"
                            value="<?php echo set_value('firstname', $firstname); ?>" autocomplete="off"/>
                     <span class="text-danger"><?php echo form_error('firstname'); ?></span>
@@ -81,6 +85,16 @@ if ($this->session->flashdata('msg')) {
                         <input id="lastname" name="lastname" placeholder="" type="text" class="form-control"
                                value="<?php echo set_value('lastname', $lastname); ?>" autocomplete="off"/>
                         <span class="text-danger"><?php echo form_error('lastname'); ?></span>
+                    </div>
+                </div>
+            <?php } ?>
+            <?php if ($this->customlib->getfieldstatus('bnname')) { ?>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label><?php echo $this->lang->line('bn_name'); ?></label>
+                        <input id="bnname" name="bnname" placeholder="" type="text" class="form-control"
+                               value="<?php echo set_value('bnname', $bnname); ?>" autocomplete="off"/>
+                        <span class="text-danger"><?php echo form_error('bnname'); ?></span>
                     </div>
                 </div>
             <?php } ?>

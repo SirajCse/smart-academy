@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>backend/datepicker/css/bootstrap-datetimepicker.css">
-<script src="<?php echo base_url(); ?>backend/datepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="<?php echo base_url('backend/datepicker/js/bootstrap-datetimepicker.js'); ?>"></script>
+<script src="<?php echo base_url('backend/dist/js/moment.min.js'); ?>"></script>
 
 <?php
 if (!$form_admission) {

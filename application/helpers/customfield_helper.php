@@ -494,6 +494,7 @@ if (!function_exists('display_custom_fields')) {
     {
         $fields = array(
             'firstname'                  => lang('first_name'),
+            'bnname'                  => lang('bn_name'),
             'admission_date'             => lang('admission_date'),
             'middlename'                 => lang('middle_name'),
             'lastname'                   => lang('last_name'),
@@ -542,6 +543,7 @@ if (!function_exists('display_custom_fields')) {
     {
          $fields = array(
             
+            'bnname'                 => lang('bn_name'),
             'middlename'                 => lang('middle_name'),
             'lastname'                   => lang('last_name'),
             'category'                   => lang('category'),
@@ -737,6 +739,7 @@ if (!function_exists('display_custom_fields')) {
 
     function get_resume_editable_fields(){
          $fields = array(            
+            'bnname'                 => lang('bn_name'),
             'middlename'                 => lang('middle_name'),
             'lastname'                   => lang('last_name'),
             'gender'                     => lang('gender'),

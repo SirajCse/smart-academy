@@ -41,6 +41,10 @@
     <meta property="og:title" content="<?= $this->customlib->getAppName(); ?>"/>
     <meta property="og:image" content="<?= base_url(ltrim($front_setting->logo ?? '', './')) ?>"/>
 
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
     <?php echo $front_setting->google_analytics; ?>
     <?php $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
 

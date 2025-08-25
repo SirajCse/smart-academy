@@ -1,5 +1,6 @@
-<link rel="stylesheet" href="<?php echo base_url(); ?>backend/datepicker/css/bootstrap-datetimepicker.css">
-<script src="<?php echo base_url(); ?>backend/datepicker/js/bootstrap-datetimepicker.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 <?php
 if (!isset($form_admission) || $form_admission) {
@@ -83,7 +84,7 @@ if ($this->session->flashdata('msg')) {
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label class="form-label" for="firstname"><?php echo $this->lang->line('first_name'); ?></label><small
+                    <label class="form-label" for="firstname"><?php echo $this->lang->line('full_name'); ?></label><small
                             class="text-danger"> *</small>
                     <input id="firstname" name="firstname" placeholder="" type="text" class="form-control"
                            value="<?php echo set_value('firstname'); ?>" autocomplete="off"/>
@@ -109,6 +110,17 @@ if ($this->session->flashdata('msg')) {
                     </div>
                 </div>
             <?php } ?>
+
+            <?php if ($this->customlib->getfieldstatus('bnname')) { ?>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label" for="bnname"><?php echo $this->lang->line('bn_name'); ?></label>
+                        <input id="bnname" name="bnname" placeholder="" type="text" class="form-control"
+                               value="<?php echo set_value('bnname'); ?>" autocomplete="off"/>
+                    </div>
+                </div>
+            <?php } ?>
+
         </div><!--./row-->
         <div class="row">
             <div class="col-md-3">
