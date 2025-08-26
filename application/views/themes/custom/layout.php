@@ -156,27 +156,48 @@
                         </a>
                     </div>
 
-                    <div class="tt-card mt-3">
-                        <h3>আমাদের ফেসবুক পেইজ</h3>
-                        <div class="tt-card-body">
-                            <div class="quice_links text-center">
-                                <?php if (!empty($front_setting->fb_url)): ?>
-                                    <iframe
-                                            src="<?php echo $front_setting->fb_url; ?>"
-                                            width="340"
-                                            height="500"
-                                            style="border:none;overflow:hidden"
-                                            scrolling="no"
-                                            frameborder="0"
-                                            loading="lazy"
-                                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                            referrerpolicy="no-referrer-when-downgrade"
-                                            title="Facebook Feed">
-                                    </iframe>
-                                <?php endif; ?>
+                    <?php if (isset($front_setting->fb_url) && ($front_setting->fb_url)) : ?>
+                        <div class="tt-card mt-3">
+                            <h3>আমাদের ফেসবুক পেইজ</h3>
+                            <div class="tt-card-body">
+                                <div class="quice_links text-center">
+
+                                    <!-- Facebook SDK load once -->
+                                    <div id="fb-root"></div>
+                                    <script async defer crossorigin="anonymous"
+                                            src="https://connect.facebook.net/bn_IN/sdk.js#xfbml=1&version=v18.0">
+                                    </script>
+
+                                    <!-- Facebook Page Plugin -->
+                                    <div class="fb-page"
+                                         data-href="<?php echo $front_setting->fb_url; ?>"
+                                         data-tabs="timeline"
+                                         data-width="100%"
+                                         data-height="500"
+                                         data-small-header="false"
+                                         data-adapt-container-width="true"
+                                         data-hide-cover="false"
+                                         data-show-facepile="true">
+                                        <blockquote cite="<?php echo $front_setting->fb_url; ?>"
+                                                    class="fb-xfbml-parse-ignore">
+                                            <a href="<?php echo $front_setting->fb_url; ?>">Facebook Page</a>
+                                        </blockquote>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                        <style>
+                            /* Make it responsive */
+                            .fb-page,
+                            .fb-page span,
+                            .fb-page iframe {
+                                width: 100% !important;
+                            }
+                        </style>
+
+                    <?php endif; ?>
 
                     <div class="tt-card py-3 rounded-3">
                         <h3 class="text-center mb-3">
