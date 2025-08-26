@@ -114,7 +114,8 @@
                                                 <?php } ?>
 
                                                 <div class="flex-grow-1">
-                                                    <a href="<?php echo site_url($notice['url']); ?>" class="text-decoration-none d-block">
+                                                    <a href="<?php echo site_url($notice['url']); ?>"
+                                                       class="text-decoration-none d-block">
                                                         <?php echo htmlspecialchars($notice['title'], ENT_QUOTES, 'UTF-8'); ?>
                                                     </a>
                                                 </div>
@@ -159,37 +160,29 @@
                     <?php if (isset($front_setting->fb_url) && ($front_setting->fb_url)) : ?>
                         <div class="tt-card mt-3">
                             <h3>আমাদের ফেসবুক পেইজ</h3>
-                            <div class="tt-card-body">
-                                <div class="quice_links text-center">
+                            <div class="tt-card-body text-center">
 
-                                    <!-- Facebook SDK load once -->
-                                    <div id="fb-root"></div>
-                                    <script async defer crossorigin="anonymous"
-                                            src="https://connect.facebook.net/bn_IN/sdk.js#xfbml=1&version=v18.0">
-                                    </script>
+                                <!-- Facebook SDK -->
+                                    <!--https://www.facebook.com/HTN.centre-->
+                                <script async defer crossorigin="anonymous"
+                                        src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v18.0"
+                                        nonce="HEH3ePbH"></script>
 
-                                    <!-- Facebook Page Plugin -->
-                                    <div class="fb-page"
-                                         data-href="<?php echo $front_setting->fb_url; ?>"
-                                         data-tabs="timeline"
-                                         data-width="100%"
-                                         data-height="500"
-                                         data-small-header="false"
-                                         data-adapt-container-width="true"
-                                         data-hide-cover="false"
-                                         data-show-facepile="true">
-                                        <blockquote cite="<?php echo $front_setting->fb_url; ?>"
-                                                    class="fb-xfbml-parse-ignore">
-                                            <a href="<?php echo $front_setting->fb_url; ?>">Facebook Page</a>
-                                        </blockquote>
-                                    </div>
-
+                                <!-- Facebook Page Plugin -->
+                                <div class="fb-page" data-href="<?php echo $front_setting->fb_url; ?>"
+                                     data-tabs="timeline" data-width="500" data-height="500" data-small-header="true"
+                                     data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true">
+                                    <blockquote cite="<?php echo $front_setting->fb_url; ?>"
+                                                class="fb-xfbml-parse-ignore"><a
+                                                href="<?php echo $front_setting->fb_url; ?>">Hypertension and Research
+                                            Centre, Rangpur</a></blockquote>
                                 </div>
+
                             </div>
                         </div>
 
                         <style>
-                            /* Make it responsive */
+                            /* Make the Page Plugin responsive */
                             .fb-page,
                             .fb-page span,
                             .fb-page iframe {
@@ -204,10 +197,12 @@
                             <i class="fas fa-phone-alt me-2 text-muted"></i>জরুরি হটলাইন
                         </h3>
 
-                        <div class="d-flex flex-wrap justify-content-center align-items-center tt-card-body" style="gap: 15px;">
+                        <div class="d-flex flex-wrap justify-content-center align-items-center tt-card-body"
+                             style="gap: 15px;">
                             <!-- 333 -->
                             <div class="hotline-logo-container">
-                                <a href="https://333.gov.bd/" class="hotline-logo" target="_blank" title="333 Emergency">
+                                <a href="https://333.gov.bd/" class="hotline-logo" target="_blank"
+                                   title="333 Emergency">
                                     <img src="<?= base_url('backend/assets/hot-line/333.png'); ?>"
                                          alt="333"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
@@ -216,7 +211,8 @@
 
                             <!-- 999 -->
                             <div class="hotline-logo-container">
-                                <a href="https://www.999.gov.bd/" class="hotline-logo" target="_blank" title="999 Emergency">
+                                <a href="https://www.999.gov.bd/" class="hotline-logo" target="_blank"
+                                   title="999 Emergency">
                                     <img src="<?= base_url('backend/assets/hot-line/999.png'); ?>" alt="999"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
                                 </a>
@@ -224,7 +220,8 @@
 
                             <!-- Fire Service -->
                             <div class="hotline-logo-container">
-                                <a href="https://fireservice.gov.bd/" class="hotline-logo" target="_blank" title="Fire Service">
+                                <a href="https://fireservice.gov.bd/" class="hotline-logo" target="_blank"
+                                   title="Fire Service">
                                     <img src="<?= base_url('backend/assets/hot-line/102.png'); ?>" alt="Fire Service"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
                                 </a>
@@ -232,7 +229,8 @@
 
                             <!-- Women & Children Affairs -->
                             <div class="hotline-logo-container">
-                                <a href="https://mowca.gov.bd/" class="hotline-logo" target="_blank" title="Women & Children Affairs">
+                                <a href="https://mowca.gov.bd/" class="hotline-logo" target="_blank"
+                                   title="Women & Children Affairs">
                                     <img src="<?= base_url('backend/assets/hot-line/109.png'); ?>"
                                          alt="Women & Children Affairs"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
@@ -241,7 +239,8 @@
 
                             <!-- Anti-Corruption -->
                             <div class="hotline-logo-container">
-                                <a href="https://www.acc.org.bd/" class="hotline-logo" target="_blank" title="Anti-Corruption Commission">
+                                <a href="https://www.acc.org.bd/" class="hotline-logo" target="_blank"
+                                   title="Anti-Corruption Commission">
                                     <img src="<?= base_url('backend/assets/hot-line/106.png'); ?>"
                                          alt="Anti-Corruption Commission"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
@@ -250,7 +249,8 @@
 
                             <!-- Disaster Management -->
                             <div class="hotline-logo-container">
-                                <a href="http://www.ddm.gov.bd" class="hotline-logo" target="_blank" title="Disaster Management">
+                                <a href="http://www.ddm.gov.bd" class="hotline-logo" target="_blank"
+                                   title="Disaster Management">
                                     <img src="<?= base_url('backend/assets/hot-line/1090.png'); ?>"
                                          alt="Disaster Management"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
@@ -259,7 +259,8 @@
 
                             <!-- Land -->
                             <div class="hotline-logo-container">
-                                <a href="https://land.gov.bd/" class="hotline-logo" target="_blank" title="Land Ministry">
+                                <a href="https://land.gov.bd/" class="hotline-logo" target="_blank"
+                                   title="Land Ministry">
                                     <img src="<?= base_url('backend/assets/hot-line/16122.png'); ?>"
                                          alt="Land Ministry"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
@@ -268,7 +269,8 @@
 
                             <!-- Social Welfare -->
                             <div class="hotline-logo-container">
-                                <a href="https://msw.portal.gov.bd" class="hotline-logo" target="_blank" title="Social Welfare">
+                                <a href="https://msw.portal.gov.bd" class="hotline-logo" target="_blank"
+                                   title="Social Welfare">
                                     <img src="<?= base_url('backend/assets/hot-line/1098.png'); ?>"
                                          alt="Social Welfare"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
@@ -286,7 +288,8 @@
 
                             <!-- Narcotics Control -->
                             <div class="hotline-logo-container">
-                                <a href="https://www.dnc.gov.bd/" class="hotline-logo" target="_blank" title="Narcotics Control">
+                                <a href="https://www.dnc.gov.bd/" class="hotline-logo" target="_blank"
+                                   title="Narcotics Control">
                                     <img src="<?= base_url('backend/assets/hot-line/madok.png'); ?>"
                                          alt="Narcotics Control"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
@@ -304,8 +307,10 @@
 
                             <!-- Power Division -->
                             <div class="hotline-logo-container">
-                                <a href="http://www.powerdivision.gov.bd/" class="hotline-logo" target="_blank" title="Power Division">
-                                    <img src="<?= base_url('backend/assets/hot-line/16999.png'); ?>" alt="Power Division"
+                                <a href="http://www.powerdivision.gov.bd/" class="hotline-logo" target="_blank"
+                                   title="Power Division">
+                                    <img src="<?= base_url('backend/assets/hot-line/16999.png'); ?>"
+                                         alt="Power Division"
                                          class="img-fluid d-block mx-auto" style="height: 65px; width: auto;">
                                 </a>
                             </div>
