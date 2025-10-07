@@ -10,6 +10,7 @@ class Smsconfig extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
+//        $this->load->library('AdaReachApiService');
     }
 
     public function index()
@@ -27,6 +28,40 @@ class Smsconfig extends Admin_Controller
         $this->load->view('smsconfig/smsList', $data);
         $this->load->view('layout/footer', $data);
     }
+    public function adareach()
+    {
+        $this->form_validation->set_error_delimiters('', '');
+        $this->form_validation->set_rules('adareach_api_key', 'API Key', 'required');
+        $this->form_validation->set_rules('adareach_base_url', 'Base URL', 'required');
+        $this->form_validation->set_rules('adareach_status', 'Status', 'required');
+
+        if ($this->form_validation->run()) {
+            $data = array(
+                'type'      => 'adareach',
+                'api_id'    => $this->input->post('adareach_api_key'),
+                'url'       => $this->input->post('adareach_base_url'),
+                'is_active' => $this->input->post('adareach_status'),
+            );
+
+            $this->smsconfig_model->add($data);
+
+            echo json_encode([
+                'st'  => 0,
+                'msg' => $this->lang->line('update_message')
+            ]);
+
+        } else {
+            $errors = [
+                'adareach_api_key' => form_error('adareach_api_key'),
+                'adareach_base_url' => form_error('adareach_base_url'),
+                'adareach_status' => form_error('adareach_status'),
+            ];
+
+            echo json_encode(['st' => 1, 'msg' => $errors]);
+        }
+    }
+
+
 
     public function clickatell()
     {
@@ -91,6 +126,7 @@ class Smsconfig extends Admin_Controller
             echo json_encode(array('st' => 1, 'msg' => $data));
         }
     }
+
 
     public function custom()
     {

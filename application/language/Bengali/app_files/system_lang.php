@@ -507,6 +507,7 @@ $lang['current_username'] ="বর্তমান ব্যবহারকার
 $lang['custom_field_list'] ="কাস্টম ক্ষেত্র তালিকা";
 $lang['custom_fields'] ="অস্ত্রোপচার";
 $lang['custom_sms_gateway'] ="কাস্টম এসএমএস গেটওয়ে";
+$lang['adareach'] ="AdaReach এসএমএস গেটওয়ে";;
 $lang['customer_name'] ="ক্রেতার নাম";
 $lang['customer_service_email'] ="গ্রাহক সেবা ইমেল";
 $lang['d_o_b'] ="ডিওবি";

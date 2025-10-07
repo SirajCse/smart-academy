@@ -11,6 +11,7 @@
     <meta name="keywords" content="<?= htmlspecialchars($page['meta_keyword'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
     <meta name="description" content="<?= htmlspecialchars($page['meta_description'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Permissions-Policy" content="unload=(self)">
     <!-- Favicons -->
     <link rel="shortcut icon" href="<?= base_url(ltrim($front_setting->fav_icon ?? '', './')) ?>" type="image/x-icon">
 
@@ -164,10 +165,9 @@
 
                                 <!-- Facebook SDK -->
                                     <!--https://www.facebook.com/HTN.centre-->
+                                <div id="fb-root"></div>
                                 <script async defer crossorigin="anonymous"
-                                        src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v18.0"
-                                        nonce="HEH3ePbH"></script>
-
+                                        src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0"></script>
                                 <!-- Facebook Page Plugin -->
                                 <div class="fb-page" data-href="<?php echo $front_setting->fb_url; ?>"
                                      data-tabs="timeline" data-width="500" data-height="500" data-small-header="true"

@@ -27,6 +27,8 @@
                         <li><a href="#tab_10" data-toggle="tab"><?php echo $this->lang->line('africastalking'); ?></a></li>
                         <li><a href="#tab_11" data-toggle="tab"><?php echo $this->lang->line('sms_egypt'); ?></a></li>
                         <li><a href="#tab_3" data-toggle="tab"><?php echo $this->lang->line('custom_sms_gateway'); ?></a></li>
+                        <li><a href="#tab_12" data-toggle="tab"><?php echo $this->lang->line('adareach') ?? 'AdaReach'; ?></a></li>
+<!--                        <li><a href="#tab_12" data-toggle="tab">AdaReach</a></li>-->
 
                     </ul>
                     <div class="tab-content">
@@ -178,7 +180,74 @@
 
                                 </div>
                             </form>
-                        </div> 
+                        </div>
+                        <!-- /.tab-pane adareach -->
+                        <div class="tab-pane" id="tab_12">
+                            <form role="form" id="adareach_form" action="<?php echo site_url('smsconfig/adareach') ?>" class="form-horizontal" method="post">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="minheight170">
+                                            <div class="col-md-7">
+                                                <?php
+                                                $adareach_result = check_in_array('adareach', $smslist);
+                                                ?>
+                                                <div class="form-group">
+                                                    <label class="col-sm-5 control-label">
+                                                        <?php echo $this->lang->line('api_key'); ?><small class="req"> *</small>
+                                                    </label>
+                                                    <div class="col-sm-7">
+                                                        <input type="text" class="form-control" name="adareach_api_key" value="<?php echo $adareach_result->api_id ?? ''; ?>">
+                                                        <span class="text text-danger adareach_api_key_error"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-5 control-label">
+                                                        <?php echo $this->lang->line('base_url'); ?><small class="req"> *</small>
+                                                    </label>
+                                                    <div class="col-sm-7">
+                                                        <input type="text" class="form-control" name="adareach_base_url" value="<?php echo $adareach_result->url ?? ''; ?>">
+                                                        <span class="text text-danger adareach_base_url_error"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-5 control-label">
+                                                        <?php echo $this->lang->line('status'); ?><small class="req"> *</small>
+                                                    </label>
+                                                    <div class="col-sm-7">
+                                                        <select class="form-control" name="adareach_status">
+                                                            <?php
+                                                            foreach ($statuslist as $s_key => $s_value) {
+                                                                $selected = ($adareach_result->is_active ?? 0) == $s_key ? "selected" : "";
+                                                                echo "<option value='{$s_key}' {$selected}>{$s_value}</option>";
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                        <span class="text text-danger adareach_status_error"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-5 text-center disblock">
+                                                <a href="#"><img src="<?php echo base_url() ?>backend/images/adareach-sms.png<?php echo img_time(); ?>" alt="AdaReach"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+
+                                <div class="box-footer">
+                                    <div class="col-md-offset-3">
+                                        <?php if ($this->rbac->hasPrivilege('sms_setting', 'can_edit')) { ?>
+                                            <button type="submit" class="btn btn-primary btnleftinfo"><?php echo $this->lang->line('save'); ?></button>
+                                            &nbsp;&nbsp;<span class="adareach_loader"></span>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                         <!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_3">
                             <form role="form" id="custom" id="custom" action="<?php echo site_url('smsconfig/custom') ?>" class="form-horizontal" method="post">
@@ -1034,6 +1103,39 @@ function check_in_array($find, $array) {
     });
 
 
+    $("#adareach_form").submit(function (e) {
+        $("[class$='_error']").html("");
+
+        $(".adareach_loader").html('<img src="' + img_path + '">');
+        var url = $(this).attr('action'); // the script where you handle the form input.
+
+        $.ajax({
+            type: "POST",
+            dataType: 'JSON',
+            url: url,
+            data: $("#adareach_form").serialize(), // serializes the form's elements.
+            success: function (data, textStatus, jqXHR)
+            {
+                if (data.st === 1) {
+                    $.each(data.msg, function (key, value) {
+                        $('.' + key + "_error").html(value);
+                    });
+                } else {
+                    successMsg(data.msg);
+                }
+                $(".adareach_loader").html("");
+
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                $(".adareach_loader").html("");
+                //if fails      
+            }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+
     $("#custom").submit(function (e) {
         $("[class$='_error']").html("");
 
@@ -1060,7 +1162,7 @@ function check_in_array($find, $array) {
             error: function (jqXHR, textStatus, errorThrown)
             {
                 $(".custom_loader").html("");
-                //if fails      
+                //if fails
             }
         });
 

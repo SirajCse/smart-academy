@@ -2358,7 +2358,6 @@ class Student extends Admin_Controller
         $sch_setting = $this->sch_setting_detail;
 
         if ($search_type == "search_filter") {
-
             $resultlist = $this->student_model->searchdtByClassSection($class, $section);
         } elseif ($search_type == "search_full") {
 

@@ -3,3 +3,6 @@
 /backend/captcha_images
 /application/config/config.php
 /application/config/database.php
+/uploads/gallery/media
+/uploads/school_content/login_image
+/uploads/school_content

@@ -143,6 +143,10 @@ class Frontcms extends Admin_Controller
             $temp        = explode(".", $_FILES["logo"]["name"]);
             $extension   = end($temp);
             if ($_FILES["logo"]["error"] > 0) {
+                if (!isset($error)){
+                    $error = "";
+                }
+
                 $error .= "Error opening the file<br />";
             }
             if ($_FILES["logo"]["type"] != 'image/gif' &&

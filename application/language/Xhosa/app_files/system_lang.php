@@ -507,6 +507,7 @@ $lang['current_username'] ="Igama lomsebenzisi langoku";
 $lang['custom_field_list'] ="Uluhlu lweNdawo eSiko";
 $lang['custom_fields'] ="Imimandla yesiko";
 $lang['custom_sms_gateway'] ="Custom SMS Gateway";
+$lang['adareach'] ="AdaReach Robi";
 $lang['customer_name'] ="Igama loMthengi";
 $lang['customer_service_email'] ="I-imeyile yeNkonzo yoMthengi";
 $lang['d_o_b'] ="I-DOB";

@@ -164,9 +164,9 @@
                                 <div class="quice_links text-center">
 
                                     <!-- Facebook SDK load once -->
+                                    <div id="fb-root"></div>
                                     <script async defer crossorigin="anonymous"
-                                            src="https://connect.facebook.net/bn_IN/sdk.js#xfbml=1&version=v18.0">
-                                    </script>
+                                            src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0"></script>
 
                                     <!-- Facebook Page Plugin -->
                                     <div class="fb-page"

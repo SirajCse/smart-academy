@@ -24,6 +24,7 @@ class Smsconfig_model extends MY_Model {
         }
     }
 
+
     public function changeStatus($type) {
         $data = array('is_active' => 'disabled');
         $this->db->where('type !=', $type);
@@ -68,6 +69,12 @@ class Smsconfig_model extends MY_Model {
         } else {
             return true;
         }
+    }
+
+    public function getByType($type)
+    {
+        return $this->db->where('type', $type)
+            ->get('sms_config')->row_array();
     }
 
     public function getActiveSMS() {
