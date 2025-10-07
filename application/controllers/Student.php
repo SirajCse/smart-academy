@@ -2345,7 +2345,8 @@ class Student extends Admin_Controller
         $class           = $this->input->post('class_id');
         $section         = $this->input->post('section_id');
         $search_text     = $this->input->post('search_text');
-        $search_type     = $this->input->post('srch_type');
+//        $search_type     = $this->input->post('srch_type');
+        $search_type     = $this->input->post('search_type');
         $classlist       = $this->class_model->get();
         $classlist       = $classlist;
         $carray          = array();
@@ -2358,6 +2359,7 @@ class Student extends Admin_Controller
         $sch_setting = $this->sch_setting_detail;
 
         if ($search_type == "search_filter") {
+
             $resultlist = $this->student_model->searchdtByClassSection($class, $section);
         } elseif ($search_type == "search_full") {
 
