@@ -423,9 +423,9 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                             "language": {
                                 processing: '<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span> '
                             },
-                            // "pageLength": 100,
+                            "pageLength": 10000,
                             "processing": true,
-                            "serverSide": false,
+                            "serverSide": true,
                             "ajax": {
                                 "url": baseurl + "student/dtstudentlist",
                                 "dataSrc": 'data',
