@@ -419,11 +419,10 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                 "orderable": false
                             }],
 
-
                             "language": {
                                 processing: '<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span> '
                             },
-                            "pageLength": 10000,
+                            "pageLength": 50,
                             "processing": true,
                             "serverSide": true,
                             "ajax": {

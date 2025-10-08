@@ -2053,6 +2053,7 @@ class Student_model extends MY_Model
         }
     }
 
+
     /* function to get record for login credential report */
     public function getdtforlogincredential($class_id = null, $section_id = null)
     {
