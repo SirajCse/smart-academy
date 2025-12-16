@@ -1637,3 +1637,6 @@ Notice Single
 .bg-success {
     background-color: #2e6438 !important;
 }
+.carousel-inner {
+    max-height: 420px;
+}
