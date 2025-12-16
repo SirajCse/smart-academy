@@ -1624,19 +1624,25 @@ Notice Single
 .tt-card-body {
     margin: -5px;
 }
-.header_information.text-center {
-    background-color: #dcdcdc85;
-    margin-block: 30px;
-    border-radius: 35px;
-}
 
-.header_2 .logo {
-    background-color: #dcdcdc85;
-    border-radius: 100px;
-}
+
 .bg-success {
     background-color: #2e6438 !important;
 }
 .carousel-inner {
     max-height: 420px;
 }
+
+@media (min-width: 768px) {
+    .header_information.text-center {
+        background-color: #dcdcdc85 !important;
+        margin-block: 30px;
+        border-radius: 35px;
+    }
+
+    .header_2 .logo {
+        background-color: #dcdcdc85 !important;
+        border-radius: 100px;
+    }
+}
+
