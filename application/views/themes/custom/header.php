@@ -3,7 +3,7 @@
         <div class="tt_boxed">
             <div class=" main_header"
 
-                 style="background-image:  url('<?= base_url($front_setting->header_image ?? 'backend/assets/image/header-Image.jpg'); ?>');">
+                 style="background-image:  url('<?= base_url($front_setting->header_image ?? 'backend/assets/image/header-image.jpg'); ?>');">
 <!--                 style="background-image:  url('--><?php //= base_url($front_setting->header_image ?? 'backend/assets/image/header-Image.jpg'); ?><!--');">-->
                 <div class="row align-items-center">
                     <div class="col-2 text-start text-md-end ">
