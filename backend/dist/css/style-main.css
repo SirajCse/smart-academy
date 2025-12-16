@@ -5261,13 +5261,13 @@ button.search.btn {
 }
 
 .btn-outline-success {
-    color: #198754;
-    border-color: #198754;
+    color: #2e6438;
+    border-color: #2e6438;
 }
 .btn-outline-success:hover {
     color: #fff;
-    background-color: #198754;
-    border-color: #198754;
+    background-color: #2e6438;
+    border-color: #2e6438;
 }
 
 .btn-outline-warning {

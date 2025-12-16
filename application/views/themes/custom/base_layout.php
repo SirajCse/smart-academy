@@ -73,7 +73,7 @@
                                 <?php foreach ($active_notices as $notice) { ?>
                                     <a href="<?php echo site_url($notice['url']); ?>" class="me-4 text-decoration-none">
                                         <?php if (!empty($notice['date'])) { ?>
-                                            <span class="badge bg-primary">
+                                            <span class="badge bg-success">
                         <?php echo bn_date($notice['date'], 'd M Y'); ?>
                     </span>
                                         <?php } ?>
@@ -104,7 +104,7 @@
                                             <div class="d-flex align-items-center">
                                                 <?php if (!empty($notice['date'])) { ?>
                                                     <div class="text-center me-3" style="width:80px; flex-shrink:0;">
-                                                        <div class="bg-primary text-white fw-bold rounded-top py-1">
+                                                        <div class="bg-success text-white fw-bold rounded-top py-1">
                                                             <?php echo bn_date($notice['date'], 'd M'); ?>
                                                         </div>
                                                         <div class="bg-light border rounded-bottom py-1 small">

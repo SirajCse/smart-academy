@@ -101,7 +101,7 @@ if ($page_form) {
                         <div class="d-flex align-items-center">
                             <?php if ($value['date']) { ?>
                                 <div class="text-center me-3" style="width:80px; flex-shrink:0;">
-                                    <div class="bg-primary text-white fw-bold rounded-top py-1">
+                                    <div class="bg-success text-white fw-bold rounded-top py-1">
                                         <?php echo bn_date($value['date'], 'd M'); ?>
                                     </div>
                                     <div class="bg-light border rounded-bottom py-1 small">
