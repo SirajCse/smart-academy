@@ -1617,3 +1617,13 @@ Notice Single
 .tt-card-body {
     margin: -5px;
 }
+.header_information.text-center {
+    background-color: #9c9c9c85;
+    margin-block: 30px;
+    border-radius: 35px;
+}
+
+.header_2 .logo {
+    background-color: #9c9c9c85;
+    border-radius: 100px;
+}
