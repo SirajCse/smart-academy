@@ -8,9 +8,16 @@
     font-style: normal;
 }
 
+/*:root {*/
+/*    --tt-color: #67318f;*/
+/*    --tt-color-lite: #8a51b5;*/
+/*    --tt-color-lite-2: #e9e9e9;*/
+/*    --tt-color-2: #5cbb5f;*/
+/*}*/
+
 :root {
-    --tt-color: #67318f;
-    --tt-color-lite: #8a51b5;
+    --tt-color: #2e6438;
+    --tt-color-lite: #3ec757ab;
     --tt-color-lite-2: #e9e9e9;
     --tt-color-2: #5cbb5f;
 }
@@ -435,7 +442,7 @@ button, ul {
 .tt-card-2 {
     background: #f9f9f9;
     overflow: hidden;
-    border-top: 10px solid #67318f;
+    border-top: 10px solid #2e6438;
 }
 
 .tt-card-2 .tt-card-body {
@@ -1617,13 +1624,14 @@ Notice Single
 .tt-card-body {
     margin: -5px;
 }
+
 .header_information.text-center {
-    background-color: #9c9c9c85;
+    background-color: #dcdcdc85;
     margin-block: 30px;
     border-radius: 35px;
 }
 
 .header_2 .logo {
-    background-color: #9c9c9c85;
+    background-color: #dcdcdc85;
     border-radius: 100px;
 }
