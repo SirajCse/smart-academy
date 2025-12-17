@@ -103,7 +103,7 @@ if (!empty($cookie_consent)) {?>
 </footer>
 
 <!-- Scroll to Top Button -->
-<a href="#" class="btn btn-primary rounded-circle shadow position-fixed bottom-0 end-0 m-4" id="scrollToTop">
+<a href="#" class="btn btn-success rounded-circle shadow position-fixed bottom-0 end-0 m-4" id="scrollToTop">
     <i class="fa fa-angle-up"></i>
 </a>
 
