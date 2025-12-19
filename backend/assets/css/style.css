@@ -1627,8 +1627,11 @@ Notice Single
 
 .header_information.text-center {
     background-color: #dcdcdc85;
-    margin-block: 30px;
     border-radius: 35px;
+}
+
+@media (max-width: 768px) {
+    margin-block: 30px;
 }
 
 .header_2 .logo {
