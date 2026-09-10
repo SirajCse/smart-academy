@@ -140,6 +140,14 @@ if (set_value('class_id') == $class['id']) {
                                                 </div>
                                             </div>
                                         <?php }?>
+                                        <!-- Add after lastname field -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="bnname"><?php echo $this->lang->line('bn_name'); ?></label>
+                                                <input id="bnname" name="bnname" placeholder="" type="text" class="form-control" value="<?php echo set_value('bnname'); ?>" />
+                                                <span class="text-danger"><?php echo form_error('bnname'); ?></span>
+                                            </div>
+                                        </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="exampleInputFile"> <?php echo $this->lang->line('gender'); ?></label><small class="req"> *</small>
@@ -819,39 +827,111 @@ if ($sch_setting->guardian_phone) {
                                         </a>
                                     </div>
                                     <div class="box-body">
-                                        <div class="mb25 bozero">
+                                        <div class="tshadow mb25 bozero">
                                             <h4 class="pagetitleh2"><?php echo $this->lang->line('student_address_details'); ?></h4>
 
                                             <div class="row around10">
-<?php if ($sch_setting->current_address) {?>
-                                                    <div class="col-md-6">
+                                                <!-- Current Address -->
+                                                <div class="col-md-6">
+                                                    <?php if ($sch_setting->guardian_address) { ?>
                                                         <div class="checkbox">
                                                             <label>
                                                                 <input type="checkbox" id="autofill_current_address" onclick="return auto_fill_guardian_address();">
-    <?php echo $this->lang->line('if_guardian_address_is_current_address'); ?>
+                                                                <?php echo $this->lang->line('if_guardian_address_is_current_address'); ?>
                                                             </label>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label for="exampleInputEmail1"><?php echo $this->lang->line('current_address'); ?></label>
-                                                            <textarea id="current_address" name="current_address" placeholder=""  class="form-control" ><?php echo set_value('current_address'); ?></textarea>
-                                                            <span class="text-danger"><?php echo form_error('current_address'); ?></span>
+                                                    <?php } ?>
+
+                                                    <h5 class="address-section-title"><?php echo $this->lang->line('current_address'); ?></h5>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="current_village"><?php echo $this->lang->line('village'); ?></label>
+                                                                <input type="text" id="current_village" name="current_village" class="form-control" value="<?php echo set_value('current_village'); ?>" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="current_ward_no"><?php echo $this->lang->line('ward_no'); ?></label>
+                                                                <input type="text" id="current_ward_no" name="current_ward_no" class="form-control" value="<?php echo set_value('current_ward_no'); ?>" />
+                                                            </div>
                                                         </div>
                                                     </div>
-<?php }if ($sch_setting->permanent_address) {?>
-                                                    <div class="col-md-6">
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" id="autofill_address"onclick="return auto_fill_address();">
-    <?php echo $this->lang->line('if_permanent_address_is_current_address'); ?>
-                                                            </label>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="current_post"><?php echo $this->lang->line('post_office'); ?></label>
+                                                                <input type="text" id="current_post" name="current_post" class="form-control" value="<?php echo set_value('current_post'); ?>" />
+                                                            </div>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label for="exampleInputEmail1"><?php echo $this->lang->line('permanent_address'); ?></label>
-                                                            <textarea id="permanent_address" name="permanent_address" placeholder="" class="form-control"><?php echo set_value('permanent_address'); ?></textarea>
-                                                            <span class="text-danger"><?php echo form_error('permanent_address'); ?></span>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="current_upazila"><?php echo $this->lang->line('upazila'); ?></label>
+                                                                <input type="text" id="current_upazila" name="current_upazila" class="form-control" value="<?php echo set_value('current_upazila'); ?>" />
+                                                            </div>
                                                         </div>
                                                     </div>
-<?php }?>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label for="current_district"><?php echo $this->lang->line('district'); ?></label>
+                                                                <input type="text" id="current_district" name="current_district" class="form-control" value="<?php echo set_value('current_district'); ?>" />
+                                                                <span class="text-danger"><?php echo form_error('current_district'); ?></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Permanent Address -->
+                                                <div class="col-md-6">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" id="autofill_address" onclick="return auto_fill_address();">
+                                                            <?php echo $this->lang->line('if_permanent_address_is_current_address'); ?>
+                                                        </label>
+                                                    </div>
+
+                                                    <h5 class="address-section-title"><?php echo $this->lang->line('permanent_address'); ?></h5>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="permanent_village"><?php echo $this->lang->line('village'); ?></label>
+                                                                <input type="text" id="permanent_village" name="permanent_village" class="form-control" value="<?php echo set_value('permanent_village'); ?>" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="permanent_ward_no"><?php echo $this->lang->line('ward_no'); ?></label>
+                                                                <input type="text" id="permanent_ward_no" name="permanent_ward_no" class="form-control" value="<?php echo set_value('permanent_ward_no'); ?>" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="permanent_post"><?php echo $this->lang->line('post_office'); ?></label>
+                                                                <input type="text" id="permanent_post" name="permanent_post" class="form-control" value="<?php echo set_value('permanent_post'); ?>" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="permanent_upazila"><?php echo $this->lang->line('upazila'); ?></label>
+                                                                <input type="text" id="permanent_upazila" name="permanent_upazila" class="form-control" value="<?php echo set_value('permanent_upazila'); ?>" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label for="permanent_district"><?php echo $this->lang->line('district'); ?></label>
+                                                                <input type="text" id="permanent_district" name="permanent_district" class="form-control" value="<?php echo set_value('permanent_district'); ?>" />
+                                                                <span class="text-danger"><?php echo form_error('permanent_district'); ?></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -1238,16 +1318,24 @@ if (($userdata["role_id"] == 2)) {
     });
 
     function auto_fill_guardian_address() {
-        if ($("#autofill_current_address").is(':checked'))
-        {
-            $('#current_address').val($('#guardian_address').val());
+        if ($("#autofill_current_address").is(':checked')) {
+            $('#current_village').val($('#guardian_village').val() || '');
+            $('#current_ward_no').val($('#guardian_ward_no').val() || '');
+            $('#current_post').val($('#guardian_post').val() || '');
+            $('#current_upazila').val($('#guardian_upazila').val() || '');
+            $('#current_district').val($('#guardian_district').val() || '');
+            $('#current_address').val($('#guardian_address').val() || '');
         }
     }
 
     function auto_fill_address() {
-        if ($("#autofill_address").is(':checked'))
-        {
-            $('#permanent_address').val($('#current_address').val());
+        if ($("#autofill_address").is(':checked')) {
+            $('#permanent_village').val($('#current_village').val() || '');
+            $('#permanent_ward_no').val($('#current_ward_no').val() || '');
+            $('#permanent_post').val($('#current_post').val() || '');
+            $('#permanent_upazila').val($('#current_upazila').val() || '');
+            $('#permanent_district').val($('#current_district').val() || '');
+            $('#permanent_address').val($('#current_address').val() || '');
         }
     }
 
@@ -1361,6 +1449,7 @@ if (($userdata["role_id"] == 2)) {
                     $('#sibling_name').text("<?php echo $this->lang->line('sibling'); ?> : " + data.full_name);
                     $('#sibling_name_next').val(data.firstname + " " + data.lastname);
                     $('#sibling_id').val(student_id);
+                    $('#bnname').val(data.bnname); // ADD THIS LINE
                     $('#father_name').val(data.father_name);
                     $('#father_phone').val(data.father_phone);
                     $('#father_occupation').val(data.father_occupation);
@@ -1374,7 +1463,18 @@ if (($userdata["role_id"] == 2)) {
                     $('#state').val(data.state);
                     $('#city').val(data.city);
                     $('#pincode').val(data.pincode);
+                    // Address fields
+                    $('#current_village').val(data.current_village);
+                    $('#current_ward_no').val(data.current_ward_no);
+                    $('#current_post').val(data.current_post);
+                    $('#current_upazila').val(data.current_upazila);
+                    $('#current_district').val(data.current_district);
                     $('#current_address').val(data.current_address);
+                    $('#permanent_village').val(data.permanent_village);
+                    $('#permanent_ward_no').val(data.permanent_ward_no);
+                    $('#permanent_post').val(data.permanent_post);
+                    $('#permanent_upazila').val(data.permanent_upazila);
+                    $('#permanent_district').val(data.permanent_district);
                     $('#permanent_address').val(data.permanent_address);
                     $('#guardian_occupation').val(data.guardian_occupation);
                     $("input[name=guardian_is][value='" + data.guardian_is + "']").prop("checked", true);
@@ -1385,6 +1485,7 @@ if (($userdata["role_id"] == 2)) {
             $('.sibling_msg').html("<div class='alert alert-danger text-center'><?php echo $this->lang->line('no_student_selected') ?></div>");
         }
     });
+
 </script>
 
 <script type="text/javascript" src="<?php echo base_url(); ?>backend/dist/js/savemode.js"></script>

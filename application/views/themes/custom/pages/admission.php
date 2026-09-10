@@ -522,49 +522,129 @@ if ($this->session->flashdata('msg')) {
         <div class="printcontent">
             <div class="row">
                 <h4 class="pagetitleh2"><?php echo $this->lang->line('student_address_details'); ?></h4>
+
+                <!-- Current Address -->
                 <?php if ($this->customlib->getfieldstatus('current_address')) { ?>
                     <div class="col-md-6">
                         <?php if ($this->customlib->getfieldstatus('guardian_address')) { ?>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="autofill_current_address"
-                                       onclick="return auto_fill_guardian_address();" autocomplete="off">
+                                <input class="form-check-input" type="checkbox" id="autofill_current_address" onclick="return auto_fill_guardian_address();" autocomplete="off">
                                 <label class="form-check-label" for="autofill_current_address">
                                     <?php echo $this->lang->line('if_guardian_address_is_current_address'); ?>
                                 </label>
                             </div>
-                        <?php } else {
-                            echo "<div class='form-check'><label>&nbsp;</label></div>";
-                        } ?>
+                        <?php } else { echo "<div class='form-check'><label>&nbsp;</label></div>"; } ?>
+
+                        <h5 class="mt-2"><?php echo $this->lang->line('current_address'); ?></h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('village'); ?></label>
+                                    <input type="text" name="current_village" class="form-control" value="<?php echo set_value('current_village'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('ward_no'); ?></label>
+                                    <input type="text" name="current_ward_no" class="form-control" value="<?php echo set_value('current_ward_no'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('post_office'); ?></label>
+                                    <input type="text" name="current_post" class="form-control" value="<?php echo set_value('current_post'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('upazila'); ?></label>
+                                    <input type="text" name="current_upazila" class="form-control" value="<?php echo set_value('current_upazila'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('district'); ?></label>
+                                    <input type="text" name="current_district" class="form-control" value="<?php echo set_value('current_district'); ?>" autocomplete="off"/>
+                                    <span class="text-danger"><?php echo form_error('current_district'); ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full address as optional -->
                         <div class="form-group">
-                            <label class="form-label"><?php echo $this->lang->line('current_address'); ?></label>
-                            <textarea id="current_address" name="current_address" placeholder="" rows="1"
-                                      class="form-control"
-                                      autocomplete="off"><?php echo set_value('current_address'); ?></textarea>
+                            <label class="form-label"><?php echo $this->lang->line('full_address'); ?></label>
+                            <textarea id="current_address" name="current_address" placeholder="" rows="1" class="form-control" autocomplete="off"><?php echo set_value('current_address'); ?></textarea>
                             <span class="text-danger"><?php echo form_error('current_address'); ?></span>
                         </div>
                     </div>
-                <?php }
-                if ($this->customlib->getfieldstatus('permanent_address')) { ?>
+                <?php } ?>
+
+                <!-- Permanent Address -->
+                <?php if ($this->customlib->getfieldstatus('permanent_address')) { ?>
                     <div class="col-md-6">
                         <?php if ($this->customlib->getfieldstatus('current_address')) { ?>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="autofill_address"
-                                       onclick="return auto_fill_address();">
+                                <input class="form-check-input" type="checkbox" id="autofill_address" onclick="return auto_fill_address();">
                                 <label class="form-check-label" for="autofill_address">
                                     <?php echo $this->lang->line('if_permanent_address_is_current_address'); ?>
                                 </label>
                             </div>
-                        <?php } else {
-                            echo "<div class='form-check'><label>&nbsp;</label></div>";
-                        } ?>
+                        <?php } else { echo "<div class='form-check'><label>&nbsp;</label></div>"; } ?>
+
+                        <h5 class="mt-2"><?php echo $this->lang->line('permanent_address'); ?></h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('village'); ?></label>
+                                    <input type="text" name="permanent_village" class="form-control" value="<?php echo set_value('permanent_village'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('ward_no'); ?></label>
+                                    <input type="text" name="permanent_ward_no" class="form-control" value="<?php echo set_value('permanent_ward_no'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('post_office'); ?></label>
+                                    <input type="text" name="permanent_post" class="form-control" value="<?php echo set_value('permanent_post'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('upazila'); ?></label>
+                                    <input type="text" name="permanent_upazila" class="form-control" value="<?php echo set_value('permanent_upazila'); ?>" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label"><?php echo $this->lang->line('district'); ?></label>
+                                    <input type="text" name="permanent_district" class="form-control" value="<?php echo set_value('permanent_district'); ?>" autocomplete="off"/>
+                                    <span class="text-danger"><?php echo form_error('permanent_district'); ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full address as optional -->
                         <div class="form-group">
-                            <label class="form-label"><?php echo $this->lang->line('permanent_address'); ?></label>
-                            <textarea id="permanent_address" name="permanent_address" rows="1" placeholder=""
-                                      class="form-control" autocomplete="off"></textarea>
+                            <label class="form-label"><?php echo $this->lang->line('full_address'); ?></label>
+                            <textarea id="permanent_address" name="permanent_address" rows="1" placeholder="" class="form-control" autocomplete="off"><?php echo set_value('permanent_address'); ?></textarea>
                             <span class="text-danger"><?php echo form_error('permanent_address'); ?></span>
                         </div>
                     </div>
                 <?php } ?>
+
             </div>
         </div>
     <?php } ?>
@@ -928,13 +1008,23 @@ if ($this->session->flashdata('msg')) {
 
     function auto_fill_guardian_address() {
         if ($("#autofill_current_address").is(':checked')) {
-            $('#current_address').val($('#guardian_address').val());
+            $('#current_village').val($('#guardian_village').val() || '');
+            $('#current_ward_no').val($('#guardian_ward_no').val() || '');
+            $('#current_post').val($('#guardian_post').val() || '');
+            $('#current_upazila').val($('#guardian_upazila').val() || '');
+            $('#current_district').val($('#guardian_district').val() || '');
+            $('#current_address').val($('#guardian_address').val() || '');
         }
     }
 
     function auto_fill_address() {
         if ($("#autofill_address").is(':checked')) {
-            $('#permanent_address').val($('#current_address').val());
+            $('#permanent_village').val($('#current_village').val() || '');
+            $('#permanent_ward_no').val($('#current_ward_no').val() || '');
+            $('#permanent_post').val($('#current_post').val() || '');
+            $('#permanent_upazila').val($('#current_upazila').val() || '');
+            $('#permanent_district').val($('#current_district').val() || '');
+            $('#permanent_address').val($('#current_address').val() || '');
         }
     }
 </script>

@@ -883,33 +883,103 @@ if ($student['guardian_is'] == "other") {
                                 <h3 class="pagetitleh2"><?php echo $this->lang->line('address_details'); ?></h3>
                                 <div class="around10">
                                     <div class="row">
-                                                <?php if ($sch_setting->current_address) {?>
-                                            <div class="col-md-6">
+                                        <!-- Current Address -->
+                                        <div class="col-md-6">
+                                            <?php if ($sch_setting->guardian_address) { ?>
                                                 <label>
                                                     <input type="checkbox" id="autofill_current_address" onclick="return auto_fill_guardian_address();">
-    <?php echo $this->lang->line('if_guardian_address_is_current_address'); ?>
+                                                    <?php echo $this->lang->line('if_guardian_address_is_current_address'); ?>
                                                 </label>
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('current_address'); ?></label>
-                                                    <textarea id="current_address" name="current_address" placeholder=""  class="form-control" ><?php echo set_value('current_address', $student['current_address']); ?></textarea>
-                                                    <span class="text-danger"><?php echo form_error('current_address'); ?></span>
+                                            <?php } ?>
+
+                                            <h5><?php echo $this->lang->line('current_address'); ?></h5>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="current_village"><?php echo $this->lang->line('village'); ?></label>
+                                                        <input type="text" id="current_village" name="current_village" class="form-control" value="<?php echo set_value('current_village', $student['current_village']); ?>" />
+                                                    </div>
                                                 </div>
-                                                <div class="checkbox">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="current_ward_no"><?php echo $this->lang->line('ward_no'); ?></label>
+                                                        <input type="text" id="current_ward_no" name="current_ward_no" class="form-control" value="<?php echo set_value('current_ward_no', $student['current_ward_no']); ?>" />
+                                                    </div>
                                                 </div>
                                             </div>
-                                                <?php }if ($sch_setting->permanent_address) {?>
-                                            <div class="col-md-6">
-                                                <label>
-                                                    <input type="checkbox" id="autofill_address"onclick="return auto_fill_address();">
-    <?php echo $this->lang->line('if_permanent_address_is_current_address'); ?>
-                                                </label>
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('permanent_address'); ?></label>
-                                                    <textarea id="permanent_address" name="permanent_address" placeholder="" class="form-control"><?php echo set_value('permanent_address', $student['permanent_address']) ?></textarea>
-                                                    <span class="text-danger"><?php echo form_error('permanent_address', $student['permanent_address']); ?></span>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="current_post"><?php echo $this->lang->line('post_office'); ?></label>
+                                                        <input type="text" id="current_post" name="current_post" class="form-control" value="<?php echo set_value('current_post', $student['current_post']); ?>" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="current_upazila"><?php echo $this->lang->line('upazila'); ?></label>
+                                                        <input type="text" id="current_upazila" name="current_upazila" class="form-control" value="<?php echo set_value('current_upazila', $student['current_upazila']); ?>" />
+                                                    </div>
                                                 </div>
                                             </div>
-<?php }?>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="current_district"><?php echo $this->lang->line('district'); ?></label>
+                                                        <input type="text" id="current_district" name="current_district" class="form-control" value="<?php echo set_value('current_district', $student['current_district']); ?>" />
+                                                        <span class="text-danger"><?php echo form_error('current_district'); ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Permanent Address -->
+                                        <div class="col-md-6">
+                                            <label>
+                                                <input type="checkbox" id="autofill_address" onclick="return auto_fill_address();">
+                                                <?php echo $this->lang->line('if_permanent_address_is_current_address'); ?>
+                                            </label>
+
+                                            <h5><?php echo $this->lang->line('permanent_address'); ?></h5>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="permanent_village"><?php echo $this->lang->line('village'); ?></label>
+                                                        <input type="text" id="permanent_village" name="permanent_village" class="form-control" value="<?php echo set_value('permanent_village', $student['permanent_village']); ?>" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="permanent_ward_no"><?php echo $this->lang->line('ward_no'); ?></label>
+                                                        <input type="text" id="permanent_ward_no" name="permanent_ward_no" class="form-control" value="<?php echo set_value('permanent_ward_no', $student['permanent_ward_no']); ?>" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="permanent_post"><?php echo $this->lang->line('post_office'); ?></label>
+                                                        <input type="text" id="permanent_post" name="permanent_post" class="form-control" value="<?php echo set_value('permanent_post', $student['permanent_post']); ?>" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="permanent_upazila"><?php echo $this->lang->line('upazila'); ?></label>
+                                                        <input type="text" id="permanent_upazila" name="permanent_upazila" class="form-control" value="<?php echo set_value('permanent_upazila', $student['permanent_upazila']); ?>" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="permanent_district"><?php echo $this->lang->line('district'); ?></label>
+                                                        <input type="text" id="permanent_district" name="permanent_district" class="form-control" value="<?php echo set_value('permanent_district', $student['permanent_district']); ?>" />
+                                                        <span class="text-danger"><?php echo form_error('permanent_district'); ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

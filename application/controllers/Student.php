@@ -574,6 +574,7 @@ class Student extends Admin_Controller
 
 					$data_insert = array(
 						'firstname'         => $this->input->post('firstname'),
+						'bnname'            => $this->input->post('bnname'),
 						'rte'               => $this->input->post('rte'),
 						'state'             => $this->input->post('state'),
 						'city'              => $this->input->post('city'),
@@ -581,6 +582,16 @@ class Student extends Admin_Controller
 						'cast'              => $this->input->post('cast'),
 						'previous_school'   => $this->input->post('previous_school'),
 						'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
+						'current_village' => $this->input->post('current_village'),
+						'current_ward_no' => $this->input->post('current_ward_no'),
+						'current_post' => $this->input->post('current_post'),
+						'current_upazila' => $this->input->post('current_upazila'),
+						'current_district' => $this->input->post('current_district'),
+						'permanent_village' => $this->input->post('permanent_village'),
+						'permanent_ward_no' => $this->input->post('permanent_ward_no'),
+						'permanent_post' => $this->input->post('permanent_post'),
+						'permanent_upazila' => $this->input->post('permanent_upazila'),
+						'permanent_district' => $this->input->post('permanent_district'),
 						'current_address'   => $this->input->post('current_address'),
 						'permanent_address' => $this->input->post('permanent_address'),
 						'adhar_no'          => $this->input->post('adhar_no'),
@@ -1127,7 +1138,8 @@ class Student extends Admin_Controller
 
         $category = $this->category_model->get();
 
-        $fields = array('admission_no', 'roll_no', 'firstname', 'middlename', 'lastname', 'gender', 'dob', 'category_id', 'religion', 'cast', 'mobileno', 'email', 'admission_date', 'blood_group', 'school_house_id', 'height', 'weight', 'measurement_date', 'father_name', 'father_phone', 'father_occupation', 'mother_name', 'mother_phone', 'mother_occupation', 'guardian_is', 'guardian_name', 'guardian_relation', 'guardian_email', 'guardian_phone', 'guardian_occupation', 'guardian_address', 'current_address', 'permanent_address', 'bank_account_no', 'bank_name', 'ifsc_code', 'adhar_no', 'samagra_id', 'rte', 'previous_school', 'note');
+//        $fields = array('admission_no', 'roll_no', 'firstname', 'middlename', 'lastname', 'gender', 'dob', 'category_id', 'religion', 'cast', 'mobileno', 'email', 'admission_date', 'blood_group', 'school_house_id', 'height', 'weight', 'measurement_date', 'father_name', 'father_phone', 'father_occupation', 'mother_name', 'mother_phone', 'mother_occupation', 'guardian_is', 'guardian_name', 'guardian_relation', 'guardian_email', 'guardian_phone', 'guardian_occupation', 'guardian_address', 'current_address', 'permanent_address', 'bank_account_no', 'bank_name', 'ifsc_code', 'adhar_no', 'samagra_id', 'rte', 'previous_school', 'note');
+	    $fields = array('admission_no', 'roll_no', 'firstname', 'bnname', 'middlename', 'lastname', 'gender', 'dob', 'category_id', 'religion', 'cast', 'mobileno', 'email', 'admission_date', 'blood_group', 'school_house_id', 'height', 'weight', 'measurement_date', 'father_name', 'father_phone', 'father_occupation', 'mother_name', 'mother_phone', 'mother_occupation', 'guardian_is', 'guardian_name', 'guardian_relation', 'guardian_email', 'guardian_phone', 'guardian_occupation', 'guardian_address', 'current_village', 'current_ward_no', 'current_post', 'current_upazila', 'current_district', 'current_address', 'permanent_village', 'permanent_ward_no', 'permanent_post', 'permanent_upazila', 'permanent_district', 'permanent_address', 'bank_account_no', 'bank_name', 'ifsc_code', 'adhar_no', 'samagra_id', 'rte', 'previous_school', 'note');
 
         $data["fields"]       = $fields;
         $data['categorylist'] = $category;
@@ -1503,6 +1515,7 @@ class Student extends Admin_Controller
             $data = array(
                 'id'                => $id,
                 'firstname'         => $this->input->post('firstname'),
+	            'bnname'            => $this->input->post('bnname'),
                 'rte'               => $this->input->post('rte'),
                 'state'             => $this->input->post('state'),
                 'city'              => $this->input->post('city'),
@@ -1510,6 +1523,16 @@ class Student extends Admin_Controller
                 'cast'              => $this->input->post('cast'),
                 'previous_school'   => $this->input->post('previous_school'),
                 'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
+	            'current_village' => $this->input->post('current_village'),
+	            'current_ward_no' => $this->input->post('current_ward_no'),
+	            'current_post' => $this->input->post('current_post'),
+	            'current_upazila' => $this->input->post('current_upazila'),
+	            'current_district' => $this->input->post('current_district'),
+	            'permanent_village' => $this->input->post('permanent_village'),
+	            'permanent_ward_no' => $this->input->post('permanent_ward_no'),
+	            'permanent_post' => $this->input->post('permanent_post'),
+	            'permanent_upazila' => $this->input->post('permanent_upazila'),
+	            'permanent_district' => $this->input->post('permanent_district'),
                 'current_address'   => $this->input->post('current_address'),
                 'permanent_address' => $this->input->post('permanent_address'),
                 'adhar_no'          => $this->input->post('adhar_no'),
@@ -1838,17 +1861,17 @@ class Student extends Admin_Controller
         }
     }
 
-    public function getByClassAndSection()
-    {
-        $class      = $this->input->get('class_id');
-        $section    = $this->input->get('section_id');
-        $resultlist = $this->student_model->searchByClassSection($class, $section);
-        foreach ($resultlist as $key => $value) {
-            $resultlist[$key]['full_name'] = $this->customlib->getFullName($value['firstname'], $value['middlename'], $value['lastname'], $this->sch_setting_detail->middlename, $this->sch_setting_detail->lastname);
-            # code...
-        }
-        echo json_encode($resultlist);
-    }
+	public function getByClassAndSection()
+	{
+		$class      = $this->input->get('class_id');
+		$section    = $this->input->get('section_id');
+		$resultlist = $this->student_model->searchByClassSection($class, $section);
+		foreach ($resultlist as $key => $value) {
+			$resultlist[$key]['full_name'] = $this->customlib->getFullName($value['firstname'], $value['middlename'], $value['lastname'], $this->sch_setting_detail->middlename, $this->sch_setting_detail->lastname);
+			$resultlist[$key]['bangla_name'] = $value['bnname']; // ADD THIS
+		}
+		echo json_encode($resultlist);
+	}
 
     public function getByClassAndSectionExcludeMe()
     {
@@ -1859,7 +1882,7 @@ class Student extends Admin_Controller
 
         foreach ($resultlist as $key => $value) {
             $resultlist[$key]['full_name'] = $this->customlib->getFullName($value['firstname'], $value['middlename'], $value['lastname'], $this->sch_setting_detail->middlename, $this->sch_setting_detail->lastname);
-            # code...
+	        $resultlist[$key]['bangla_name'] = $value['bnname'] ?? '';
         }
 
         echo json_encode($resultlist);
@@ -1873,7 +1896,8 @@ class Student extends Admin_Controller
         foreach ($resultlist as $key => $value) {
 
             $resultlist['full_name'] = $this->customlib->getFullName($resultlist['firstname'], $resultlist['middlename'], $resultlist['lastname'], $this->sch_setting_detail->middlename, $this->sch_setting_detail->lastname);
-        }
+	        $resultlist[$key]['bangla_name'] = $value['bnname'] ?? '';
+		}
 
         echo json_encode($resultlist);
     }
@@ -2394,10 +2418,17 @@ class Student extends Admin_Controller
                 $print_button='<a type="button" class="btn btn-default btn-xs print_student_details shadow-none" data-student_id="'.$student->id.'" data-student_name="'.$this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname).'" data-admission_no="'.$student->admission_no.'" data-action="download" data-placement="bottom" data-toggle="tooltip" 
                         data-original-title="print"  data-loading-text="'.$loading.'" ><i class="fa fa-print"></i></a></div>';
 
-                $row   = array();
-                $row[] = $student->admission_no;
-                $row[] = "<a href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
-                $row[] = $student->roll_no;
+	            $row   = array();
+	            $row[] = $student->admission_no;
+	            $row[] = "<a href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
+	            $row[] = $student->bnname ?? '';
+	            $row[] = $student->current_village ?? '';
+	            $row[] = $student->current_upazila ?? '';
+	            $row[] = $student->current_district ?? '';
+	            $row[] = $student->permanent_village ?? '';
+	            $row[] = $student->permanent_upazila ?? '';
+	            $row[] = $student->permanent_district ?? '';
+				$row[] = $student->roll_no;
                 $row[] = $student->class . "(" . $student->section . ")";
                 if ($sch_setting->father_name) {
                     $row[] = $student->father_name;

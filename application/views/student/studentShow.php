@@ -527,18 +527,50 @@ $currency_symbol = $admin_session['currency_symbol'];
                                 <div class="table-responsive around10 pt0">
                                     <table class="table3 table-hover table-striped tmb0">
                                         <tbody>
-                                            <?php if ($sch_setting->current_address) { ?>
-                                                <tr>
-                                                    <td width="35%"><?php echo $this->lang->line('current_address'); ?></td>
-                                                    <td class="col-md-5"><?php echo $student['current_address']; ?></td>
-                                                </tr>
-                                            <?php }
-                                            if ($sch_setting->permanent_address) { ?>
-                                                <tr>
-                                                    <td><?php echo $this->lang->line('permanent_address'); ?></td>
-                                                    <td><?php echo $student['permanent_address']; ?></td>
-                                                </tr>
-                                            <?php } ?>
+                                        <?php if ($sch_setting->current_address) { ?>
+                                            <tr>
+                                                <td width="35%"><?php echo $this->lang->line('current_address'); ?></td>
+                                                <td class="col-md-5">
+                                                    <?php
+                                                    $current_addr = array();
+                                                    if (!empty($student['current_village'])) $current_addr[] = '<b>' . $this->lang->line('village') . ':</b> ' . $student['current_village'];
+                                                    if (!empty($student['current_ward_no'])) $current_addr[] = '<b>' . $this->lang->line('ward_no') . ':</b> ' . $student['current_ward_no'];
+                                                    if (!empty($student['current_post'])) $current_addr[] = '<b>' . $this->lang->line('post_office') . ':</b> ' . $student['current_post'];
+                                                    if (!empty($student['current_upazila'])) $current_addr[] = '<b>' . $this->lang->line('upazila') . ':</b> ' . $student['current_upazila'];
+                                                    if (!empty($student['current_district'])) $current_addr[] = '<b>' . $this->lang->line('district') . ':</b> ' . $student['current_district'];
+
+                                                    echo implode('<br>', $current_addr);
+
+                                                    // Also show full address if available
+                                                    if (!empty($student['current_address']) && $student['current_address'] != '') {
+                                                        echo '<br><b>Full:</b> ' . $student['current_address'];
+                                                    }
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+
+                                        <?php if ($sch_setting->permanent_address) { ?>
+                                            <tr>
+                                                <td><?php echo $this->lang->line('permanent_address'); ?></td>
+                                                <td>
+                                                    <?php
+                                                    $permanent_addr = array();
+                                                    if (!empty($student['permanent_village'])) $permanent_addr[] = '<b>' . $this->lang->line('village') . ':</b> ' . $student['permanent_village'];
+                                                    if (!empty($student['permanent_ward_no'])) $permanent_addr[] = '<b>' . $this->lang->line('ward_no') . ':</b> ' . $student['permanent_ward_no'];
+                                                    if (!empty($student['permanent_post'])) $permanent_addr[] = '<b>' . $this->lang->line('post_office') . ':</b> ' . $student['permanent_post'];
+                                                    if (!empty($student['permanent_upazila'])) $permanent_addr[] = '<b>' . $this->lang->line('upazila') . ':</b> ' . $student['permanent_upazila'];
+                                                    if (!empty($student['permanent_district'])) $permanent_addr[] = '<b>' . $this->lang->line('district') . ':</b> ' . $student['permanent_district'];
+
+                                                    echo implode('<br>', $permanent_addr);
+
+                                                    if (!empty($student['permanent_address']) && $student['permanent_address'] != '') {
+                                                        echo '<br><b>Full:</b> ' . $student['permanent_address'];
+                                                    }
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>

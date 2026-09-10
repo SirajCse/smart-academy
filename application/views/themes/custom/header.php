@@ -1,10 +1,7 @@
 <header id="header" class="header_2">
     <div class="container tt_cont topbar">
         <div class="tt_boxed">
-            <div class=" main_header"
-
-                 style="background-image:  url('<?= base_url($front_setting->header_image ?? 'backend/assets/image/header-top.jpg'); ?>');">
-<!--                 style="background-image:  url('--><?php //= base_url($front_setting->header_image ?? 'backend/assets/image/header-Image.jpg'); ?><!--');">-->
+            <div class=" main_header" style="background-image:  url('<?= base_url($front_setting->header_image ?? 'backend/assets/image/header-top.jpg'); ?>');">
                 <div class="row align-items-center">
                     <div class="col-2 text-start text-md-end ">
                         <a href="<?php echo base_url() ?>">

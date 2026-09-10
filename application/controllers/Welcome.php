@@ -438,6 +438,18 @@ class Welcome extends Front_Controller
                         }
                     }
 
+	                // Add these lines where other address fields are defined
+	                $current_village = $this->input->post('current_village');
+	                $current_ward_no = $this->input->post('current_ward_no');
+	                $current_post = $this->input->post('current_post');
+	                $current_upazila = $this->input->post('current_upazila');
+	                $current_district = $this->input->post('current_district');
+	                $permanent_village = $this->input->post('permanent_village');
+	                $permanent_ward_no = $this->input->post('permanent_ward_no');
+	                $permanent_post = $this->input->post('permanent_post');
+	                $permanent_upazila = $this->input->post('permanent_upazila');
+	                $permanent_district = $this->input->post('permanent_district');
+
                     $middlename = $this->input->post('middlename');
                     $lastname = $this->input->post('lastname');
                     $bnname = $this->input->post('bnname');
@@ -471,6 +483,38 @@ class Welcome extends Front_Controller
                     $adhar_no = $this->input->post('adhar_no');
                     $samagra_id = $this->input->post('samagra_id');
                     $rte = $this->input->post('rte');
+
+	                // Add to $data array before insert
+	                if (isset($current_village)) {
+		                $data['current_village'] = $this->input->post('current_village');
+	                }
+	                if (isset($current_ward_no)) {
+		                $data['current_ward_no'] = $this->input->post('current_ward_no');
+	                }
+	                if (isset($current_post)) {
+		                $data['current_post'] = $this->input->post('current_post');
+	                }
+	                if (isset($current_upazila)) {
+		                $data['current_upazila'] = $this->input->post('current_upazila');
+	                }
+	                if (isset($current_district)) {
+		                $data['current_district'] = $this->input->post('current_district');
+	                }
+	                if (isset($permanent_village)) {
+		                $data['permanent_village'] = $this->input->post('permanent_village');
+	                }
+	                if (isset($permanent_ward_no)) {
+		                $data['permanent_ward_no'] = $this->input->post('permanent_ward_no');
+	                }
+	                if (isset($permanent_post)) {
+		                $data['permanent_post'] = $this->input->post('permanent_post');
+	                }
+	                if (isset($permanent_upazila)) {
+		                $data['permanent_upazila'] = $this->input->post('permanent_upazila');
+	                }
+	                if (isset($permanent_district)) {
+		                $data['permanent_district'] = $this->input->post('permanent_district');
+	                }
 
                     if (isset($middlename)) {
                         $data['middlename'] = $this->input->post('middlename');
@@ -728,6 +772,18 @@ class Welcome extends Front_Controller
 
             $this->data['application_date'] = date($this->customlib->getSchoolDateFormat(), $this->customlib->dateyyyymmddTodateformat(date("Y-m-d", strtotime($result['created_at']))));
 
+	        // Add after other assignments
+	        $this->data['current_village'] = $result['current_village'];
+	        $this->data['current_ward_no'] = $result['current_ward_no'];
+	        $this->data['current_post'] = $result['current_post'];
+	        $this->data['current_upazila'] = $result['current_upazila'];
+	        $this->data['current_district'] = $result['current_district'];
+	        $this->data['permanent_village'] = $result['permanent_village'];
+	        $this->data['permanent_ward_no'] = $result['permanent_ward_no'];
+	        $this->data['permanent_post'] = $result['permanent_post'];
+	        $this->data['permanent_upazila'] = $result['permanent_upazila'];
+	        $this->data['permanent_district'] = $result['permanent_district'];
+
             $this->data['student_pic'] = $result['image'];
             $this->data['father_name'] = $result['father_name'];
             $this->data['father_phone'] = $result['father_phone'];
@@ -864,7 +920,16 @@ class Welcome extends Front_Controller
             } else {
                 $this->data['measurement_date'] = "";
             }
-
+	        $this->data['current_village'] = $result['current_village'];
+	        $this->data['current_ward_no'] = $result['current_ward_no'];
+	        $this->data['current_post'] = $result['current_post'];
+	        $this->data['current_upazila'] = $result['current_upazila'];
+	        $this->data['current_district'] = $result['current_district'];
+	        $this->data['permanent_village'] = $result['permanent_village'];
+	        $this->data['permanent_ward_no'] = $result['permanent_ward_no'];
+	        $this->data['permanent_post'] = $result['permanent_post'];
+	        $this->data['permanent_upazila'] = $result['permanent_upazila'];
+	        $this->data['permanent_district'] = $result['permanent_district'];
             $this->data['father_name'] = $result['father_name'];
             $this->data['father_phone'] = $result['father_phone'];
             $this->data['father_occupation'] = $result['father_occupation'];
@@ -1026,6 +1091,38 @@ class Welcome extends Front_Controller
                         $rte = $this->input->post('rte');
                         $adhar_no = $this->input->post('adhar_no');
                         $samagra_id = $this->input->post('samagra_id');
+
+	                    // Add to $data array in the update section
+	                    if (isset($current_village)) {
+		                    $data['current_village'] = $this->input->post('current_village');
+	                    }
+	                    if (isset($current_ward_no)) {
+		                    $data['current_ward_no'] = $this->input->post('current_ward_no');
+	                    }
+	                    if (isset($current_post)) {
+		                    $data['current_post'] = $this->input->post('current_post');
+	                    }
+	                    if (isset($current_upazila)) {
+		                    $data['current_upazila'] = $this->input->post('current_upazila');
+	                    }
+	                    if (isset($current_district)) {
+		                    $data['current_district'] = $this->input->post('current_district');
+	                    }
+	                    if (isset($permanent_village)) {
+		                    $data['permanent_village'] = $this->input->post('permanent_village');
+	                    }
+	                    if (isset($permanent_ward_no)) {
+		                    $data['permanent_ward_no'] = $this->input->post('permanent_ward_no');
+	                    }
+	                    if (isset($permanent_post)) {
+		                    $data['permanent_post'] = $this->input->post('permanent_post');
+	                    }
+	                    if (isset($permanent_upazila)) {
+		                    $data['permanent_upazila'] = $this->input->post('permanent_upazila');
+	                    }
+	                    if (isset($permanent_district)) {
+		                    $data['permanent_district'] = $this->input->post('permanent_district');
+	                    }
 
                         if (isset($adhar_no)) {
                             $data['adhar_no'] = $this->input->post('adhar_no');

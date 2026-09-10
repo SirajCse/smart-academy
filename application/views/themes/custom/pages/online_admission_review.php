@@ -574,27 +574,50 @@ if ($guardian_pic != "") {
         <div class="printcontent">
             <div class="row">
                 <h4 class="pagetitleh2"><?php echo $this->lang->line('student_address_details'); ?></h4>
+                <!-- Current Address Display -->
                 <?php if ($this->customlib->getfieldstatus('current_address')) { ?>
                     <div class="col-md-6 col-sm-6">
                         <div class="form-group">
                             <label><b><?php echo $this->lang->line('current_address'); ?></b></label>
-                            <p><?php if ($current_address != "") {
-                                    echo $current_address;
-                                } else {
-                                    echo "--";
-                                }; ?></p>
+                            <p>
+                                <?php
+                                $current_addr_parts = array();
+                                if (!empty($current_village)) $current_addr_parts[] = '<b>গ্রাম:</b> ' . $current_village;
+                                if (!empty($current_ward_no)) $current_addr_parts[] = '<b>ওয়ার্ড নং:</b> ' . $current_ward_no;
+                                if (!empty($current_post)) $current_addr_parts[] = '<b>পোস্ট:</b> ' . $current_post;
+                                if (!empty($current_upazila)) $current_addr_parts[] = '<b>উপজেলা:</b> ' . $current_upazila;
+                                if (!empty($current_district)) $current_addr_parts[] = '<b>জেলা:</b> ' . $current_district;
+                                echo implode('<br>', $current_addr_parts);
+
+                                if (!empty($current_address) && $current_address != '') {
+                                    echo '<br><b>Full:</b> ' . $current_address;
+                                }
+                                ?>
+                            </p>
                         </div>
                     </div>
                 <?php } ?>
+
+                <!-- Permanent Address Display -->
                 <?php if ($this->customlib->getfieldstatus('permanent_address')) { ?>
                     <div class="col-md-6 col-sm-6">
                         <div class="form-group">
                             <label><b><?php echo $this->lang->line('permanent_address'); ?></b></label>
-                            <p><?php if ($permanent_address != "") {
-                                    echo $permanent_address;
-                                } else {
-                                    echo "--";
-                                } ?></p>
+                            <p>
+                                <?php
+                                $permanent_addr_parts = array();
+                                if (!empty($permanent_village)) $permanent_addr_parts[] = '<b>গ্রাম:</b> ' . $permanent_village;
+                                if (!empty($permanent_ward_no)) $permanent_addr_parts[] = '<b>ওয়ার্ড নং:</b> ' . $permanent_ward_no;
+                                if (!empty($permanent_post)) $permanent_addr_parts[] = '<b>পোস্ট:</b> ' . $permanent_post;
+                                if (!empty($permanent_upazila)) $permanent_addr_parts[] = '<b>উপজেলা:</b> ' . $permanent_upazila;
+                                if (!empty($permanent_district)) $permanent_addr_parts[] = '<b>জেলা:</b> ' . $permanent_district;
+                                echo implode('<br>', $permanent_addr_parts);
+
+                                if (!empty($permanent_address) && $permanent_address != '') {
+                                    echo '<br><b>Full:</b> ' . $permanent_address;
+                                }
+                                ?>
+                            </p>
                         </div>
                     </div>
                 <?php } ?>

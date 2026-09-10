@@ -17,6 +17,7 @@ $config['ci_front_home_page_slug']  = 'home';
 $config['ci_front_themes']          = array(
     'default'       => 'theme_default.jpg',
     'custom'       => 'theme_default.jpg',
+    'glpsc'       => 'theme_default.jpg',
     'yellow'        => 'theme_yellow.jpg',
     'darkgray'      => 'theme_darkgray.jpg',
     'bold_blue'     => 'theme_bold_blue.jpg',
