@@ -3,7 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 <?php
-if (!isset($form_admission) || $form_admission) {
+if (!isset($form_admission) || !$form_admission) {
     ?>
     <div class="alert alert-danger">
         <?php echo $this->lang->line('admission_form_disable_please_contact_to_administrator'); ?>

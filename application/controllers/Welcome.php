@@ -263,6 +263,7 @@ class Welcome extends Front_Controller
             $this->data['page'] = $page;
             ///============
             $this->data['form_admission'] = $this->setting_model->getOnlineAdmissionStatus();
+
             $genderList = $this->customlib->getGender();
             $this->data['genderList'] = $genderList;
             $this->data['title'] = 'Add Student';
