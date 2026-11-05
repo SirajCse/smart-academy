@@ -1361,433 +1361,433 @@ class Student extends Admin_Controller
         }
     }
 
-    public function edit($id)
-    {
-
-        if (!$this->rbac->hasPrivilege('student', 'can_edit')) {
-            access_denied();
-        }
-        $data['title']                 = $this->lang->line('edit_student');
-        $data['id']                    = $id;
-        $student                       = $this->student_model->get($id);
-        $genderList                    = $this->customlib->getGender();
-        $data['student']               = $student;
-        $data["month"]                 = $this->customlib->getMonthDropdown();
-        $data['feesessiongroup_model'] = $this->feesessiongroup_model->getFeesByGroupByStudent($student['student_session_id']);
-
-        $data['adm_auto_insert'] = $this->sch_setting_detail->adm_auto_insert;
-        $data['genderList']      = $genderList;
-        $session                 = $this->setting_model->getCurrentSession();
-        $data['transport_fees']  = $this->studenttransportfee_model->getTransportFeeByStudentSession($student['student_session_id'], $student['route_pickup_point_id']);
-        $vehroute_result         = $this->vehroute_model->getRouteVehiclesList();
-        $data['vehroutelist']    = $vehroute_result;
-        $class                   = $this->class_model->get();
-        $setting_result          = $this->setting_model->get();
-
-        $data["student_categorize"] = 'class';
-        $data['classlist']          = $class;
-        $category                   = $this->category_model->get();
-        $data['categorylist']       = $category;
-        $hostelList                 = $this->hostel_model->get();
-        $data['hostelList']         = $hostelList;
-        $houses                     = $this->student_model->gethouselist();
-        $data['houses']             = $houses;
-        $data["bloodgroup"]         = $this->blood_group;
-        $siblings                   = $this->student_model->getMySiblings($student['parent_id'], $student['id']);
-        $data['siblings']           = $siblings;
-        $data['siblings_counts']    = count($siblings);
-        $custom_fields              = $this->customfield_model->getByBelong('students');
-        $data['sch_setting']        = $this->sch_setting_detail;
-
-        //***fees discount***//
-        $data['student_fees_discount']  = $this->feediscount_model->getStudentFeesDiscount($student['student_session_id']); //edit
-        $feesdiscount_result            = $this->feediscount_model->get();
-        $data['feediscountList']        = $feesdiscount_result;
-        //***fees discount***//
-
-        foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
-            if ($custom_fields_value['validation']) {
-                $custom_fields_id   = $custom_fields_value['id'];
-                $custom_fields_name = $custom_fields_value['name'];
-                $this->form_validation->set_rules("custom_fields[students][" . $custom_fields_id . "]", $custom_fields_name, 'trim|required');
-            }
-        }
-
-        $this->form_validation->set_rules('firstname', $this->lang->line('first_name'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('dob', $this->lang->line('date_of_birth'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('gender', $this->lang->line('gender'), 'trim|required|xss_clean');
-
-        if ($this->sch_setting_detail->guardian_name) {
-            $this->form_validation->set_rules('guardian_name', $this->lang->line('guardian_name'), 'trim|required|xss_clean');
-            $this->form_validation->set_rules('guardian_is', $this->lang->line('guardian'), 'trim|required|xss_clean');
-        }
-
-        if ($this->sch_setting_detail->guardian_phone) {
-            $this->form_validation->set_rules('guardian_phone', $this->lang->line('guardian_phone'), 'trim|required|xss_clean');
-        }
-
-        $this->form_validation->set_rules(
-            'email',
-            $this->lang->line('email'),
-            array(
-                'valid_email',
-                array('check_student_email_exists', array($this->student_model, 'check_student_email_exists')),
-            )
-        );
-
-        $this->form_validation->set_rules(
-            'mobileno',
-            $this->lang->line('mobile_no'),
-            array(
-                'xss_clean',
-                array('check_student_mobile_exists', array($this->student_model, 'check_student_mobile_no_exists')),
-            )
-        );
-
-        if (!$this->sch_setting_detail->adm_auto_insert) {
-
-            $this->form_validation->set_rules('admission_no', $this->lang->line('admission_no'), array('required', array('check_admission_no_exists', array($this->student_model, 'valid_student_admission_no'))));
-        }
-
-        $this->form_validation->set_rules('file', $this->lang->line('image'), 'callback_handle_upload[file]');
-
-        $this->form_validation->set_rules('father_pic', $this->lang->line('image'), 'callback_handle_father_upload[father_pic]');
-        $this->form_validation->set_rules('mother_pic', $this->lang->line('image'), 'callback_handle_mother_upload[mother_pic]');
-        $this->form_validation->set_rules('guardian_pic', $this->lang->line('image'), 'callback_handle_guardian_upload[guardian_pic]');
-
-        $transport_feemaster_id = $this->input->post('transport_feemaster_id');
-
-        if (!empty($transport_feemaster_id)) {
-            $this->form_validation->set_rules('vehroute_id', $this->lang->line('route_list'), 'trim|required|xss_clean');
-            $this->form_validation->set_rules('route_pickup_point_id', $this->lang->line('pickup_point'), 'trim|required|xss_clean');
-            $this->form_validation->set_rules('transport_feemaster_id[]', $this->lang->line('fees_month'), 'trim|required|xss_clean');
-        }
-
-        if ($this->form_validation->run() == false) {
-            $this->load->view('layout/header', $data);
-            $this->load->view('student/studentEdit', $data);
-            $this->load->view('layout/footer', $data);
-        } else {
-            $prev_fees_group   = array();
-            $fee_session_group = array();
-
-            $custom_field_post = $this->input->post("custom_fields[students]");
-            if (isset($custom_field_post)) {
-                $custom_value_array = array();
-                foreach ($custom_field_post as $key => $value) {
-                    $check_field_type = $this->input->post("custom_fields[students][" . $key . "]");
-                    $field_value      = is_array($check_field_type) ? implode(",", $check_field_type) : $check_field_type;
-                    $array_custom     = array(
-                        'belong_table_id' => $id,
-                        'custom_field_id' => $key,
-                        'field_value'     => $field_value,
-                    );
-                    $custom_value_array[] = $array_custom;
-                }
-                $this->customfield_model->updateRecord($custom_value_array, $id, 'students');
-            }
-            $student_id = $this->input->post('student_id');
-            $student    = $this->student_model->get($student_id);
-
-            $sibling_id            = $this->input->post('sibling_id');
-            $siblings_counts       = $this->input->post('siblings_counts');
-            $siblings              = $this->student_model->getMySiblings($student['parent_id'], $student_id);
-            $total_siblings        = count($siblings);
-            $class_id              = $this->input->post('class_id');
-            $section_id            = $this->input->post('section_id');
-            $hostel_room_id        = $this->input->post('hostel_room_id');
-            $fees_discount         = $this->input->post('fees_discount');
-            $route_pickup_point_id = $this->input->post('route_pickup_point_id');
-
-            if (empty($route_pickup_point_id)) {
-                $route_pickup_point_id = null;
-            }
-
-            if (empty($hostel_room_id)) {
-                $hostel_room_id = 0;
-            }
-            $vehroute_id = $this->input->post('vehroute_id');
-            if (empty($vehroute_id)) {
-                $vehroute_id = null;
-            }
-            $data = array(
-                'id'                => $id,
-                'firstname'         => $this->input->post('firstname'),
-	            'bnname'            => $this->input->post('bnname'),
-                'rte'               => $this->input->post('rte'),
-                'state'             => $this->input->post('state'),
-                'city'              => $this->input->post('city'),
-                'pincode'           => $this->input->post('pincode'),
-                'cast'              => $this->input->post('cast'),
-                'previous_school'   => $this->input->post('previous_school'),
-                'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
-	            'current_village' => $this->input->post('current_village'),
-	            'current_ward_no' => $this->input->post('current_ward_no'),
-	            'current_post' => $this->input->post('current_post'),
-	            'current_upazila' => $this->input->post('current_upazila'),
-	            'current_district' => $this->input->post('current_district'),
-	            'permanent_village' => $this->input->post('permanent_village'),
-	            'permanent_ward_no' => $this->input->post('permanent_ward_no'),
-	            'permanent_post' => $this->input->post('permanent_post'),
-	            'permanent_upazila' => $this->input->post('permanent_upazila'),
-	            'permanent_district' => $this->input->post('permanent_district'),
-                'current_address'   => $this->input->post('current_address'),
-                'permanent_address' => $this->input->post('permanent_address'),
-                'adhar_no'          => $this->input->post('adhar_no'),
-                'samagra_id'        => $this->input->post('samagra_id'),
-                'bank_account_no'   => $this->input->post('bank_account_no'),
-                'bank_name'         => $this->input->post('bank_name'),
-                'ifsc_code'         => $this->input->post('ifsc_code'),
-                'guardian_email'    => $this->input->post('guardian_email'),
-                'gender'            => $this->input->post('gender'),
-                'guardian_name'     => $this->input->post('guardian_name'),
-                'guardian_relation' => $this->input->post('guardian_relation'),
-                'guardian_phone'    => $this->input->post('guardian_phone'),
-                'guardian_address'  => $this->input->post('guardian_address'),
-                'hostel_room_id'    => $hostel_room_id,
-                'note'              => $this->input->post('note'),
-                'is_active'         => 'yes',
-            );
-            if ($this->sch_setting_detail->guardian_occupation) {
-                $data['guardian_occupation'] = $this->input->post('guardian_occupation');
-            }
-            $house             = $this->input->post('house');
-            $blood_group       = $this->input->post('blood_group');
-            $measurement_date  = $this->input->post('measure_date');
-            $roll_no           = $this->input->post('roll_no');
-            $lastname          = $this->input->post('lastname');
-            $middlename        = $this->input->post('middlename');
-            $category_id       = $this->input->post('category_id');
-            $religion          = $this->input->post('religion');
-            $mobileno          = $this->input->post('mobileno');
-            $email             = $this->input->post('email');
-            $admission_date    = $this->input->post('admission_date');
-            $height            = $this->input->post('height');
-            $weight            = $this->input->post('weight');
-            $father_name       = $this->input->post('father_name');
-            $father_phone      = $this->input->post('father_phone');
-            $father_occupation = $this->input->post('father_occupation');
-            $mother_name       = $this->input->post('mother_name');
-            $mother_phone      = $this->input->post('mother_phone');
-            $mother_occupation = $this->input->post('mother_occupation');
-
-            if ($this->sch_setting_detail->guardian_name) {
-                $data['guardian_is'] = $this->input->post('guardian_is');
-            }
-
-            if (isset($measurement_date)) {
-                $data['measurement_date'] = $this->customlib->dateFormatToYYYYMMDD($this->input->post('measure_date'));
-            }
-
-            if (isset($house)) {
-                $data['school_house_id'] = $this->input->post('house');
-            }
-
-            if (isset($blood_group)) {
-                $data['blood_group'] = $this->input->post('blood_group');
-            }
-
-            if (isset($roll_no)) {
-                $data['roll_no'] = $this->input->post('roll_no');
-            }
-
-            if (isset($lastname)) {
-                $data['lastname'] = $this->input->post('lastname');
-            }
-
-            if (isset($middlename)) {
-                $data['middlename'] = $this->input->post('middlename');
-            }
-
-            if (isset($category_id)) {
-                $data['category_id'] = $this->input->post('category_id');
-            }
-
-            if (isset($religion)) {
-                $data['religion'] = $this->input->post('religion');
-            }
-
-            if (isset($mobileno)) {
-                $data['mobileno'] = $this->input->post('mobileno');
-            }
-
-            if (isset($email)) {
-                $data['email'] = $this->input->post('email');
-            }
-
-            if (isset($admission_date)) {
-                $data['admission_date'] = $this->customlib->dateFormatToYYYYMMDD($this->input->post('admission_date'));
-            }
-
-            if (isset($height)) {
-                $data['height'] = $this->input->post('height');
-            }
-
-            if (isset($weight)) {
-                $data['weight'] = $this->input->post('weight');
-            }
-
-            if (isset($father_name)) {
-                $data['father_name'] = $this->input->post('father_name');
-            }
-
-            if (isset($father_phone)) {
-                $data['father_phone'] = $this->input->post('father_phone');
-            }
-
-            if (isset($father_occupation)) {
-                $data['father_occupation'] = $this->input->post('father_occupation');
-            }
-
-            if (isset($mother_name)) {
-                $data['mother_name'] = $this->input->post('mother_name');
-            }
-
-            if (isset($mother_phone)) {
-                $data['mother_phone'] = $this->input->post('mother_phone');
-            }
-
-            if (isset($mother_occupation)) {
-                $data['mother_occupation'] = $this->input->post('mother_occupation');
-            }
-
-            if (empty($_FILES["file"])) {
-                if ($this->input->post('gender') == 'Female') {
-                    $data['image'] = 'uploads/student_images/default_female.jpg';
-                } else {
-                    $data['image'] = 'uploads/student_images/default_male.jpg';
-                }
-            }
-
-            if (isset($_FILES["file"]) && !empty($_FILES['file']['name'])) {
-                $img_name      = $this->media_storage->fileupload("file", "./uploads/student_images/");
-                $data['image'] = "uploads/student_images/" . $img_name;
-            }
-
-            if (isset($_FILES["father_pic"]) && !empty($_FILES['father_pic']['name'])) {
-                $img_name           = $this->media_storage->fileupload("father_pic", "./uploads/student_images/");
-                $data['father_pic'] = "uploads/student_images/" . $img_name;
-            }
-
-            if (isset($_FILES["mother_pic"]) && !empty($_FILES['mother_pic']['name'])) {
-                $img_name           = $this->media_storage->fileupload("mother_pic", "./uploads/student_images/");
-                $data['mother_pic'] = "uploads/student_images/" . $img_name;
-            }
-
-            if (isset($_FILES["guardian_pic"]) && !empty($_FILES['guardian_pic']['name'])) {
-                $img_name             = $this->media_storage->fileupload("guardian_pic", "./uploads/student_images/");
-                $data['guardian_pic'] = "uploads/student_images/" . $img_name;
-            }
-
-            if (!$this->sch_setting_detail->adm_auto_insert) {
-                $data['admission_no'] = $this->input->post('admission_no');
-            }
-
-             $data['created_by'] = $this->session->userdata['admin']['id'];
-
-            $this->student_model->add($data);
-            $data_new = array(
-                'student_id'            => $id,
-                'class_id'              => $class_id,
-                'section_id'            => $section_id,
-                'session_id'            => $session,
-                'fees_discount'         => $fees_discount,
-                'route_pickup_point_id' => $route_pickup_point_id,
-                'vehroute_id'           => $vehroute_id,
-            );
-
-            $insert_id = $this->student_model->add_student_session($data_new);
-
-            if ($this->input->post('prev_fees_group')) {
-                $prev_fees_group = $this->input->post('prev_fees_group');
-            }
-
-            if ($this->input->post('fee_session_group_id')) {
-                $fee_session_group = $this->input->post('fee_session_group_id');
-            }
-
-            $delete_fee_session_group = array_diff($prev_fees_group, $fee_session_group);
-            $add_fee_session_group    = array_diff($fee_session_group, $prev_fees_group);
-
-            $student_session_id     = $this->input->post('student_session_id');
-            $transport_feemaster_id = $this->input->post('transport_feemaster_id');
-            $this->studentfeemaster_model->assign_bulk_fees($add_fee_session_group, $student_session_id, $delete_fee_session_group);
-
-            if (!empty($transport_feemaster_id)) {
-                $trns_data_insert = array();
-                foreach ($transport_feemaster_id as $transport_feemaster_key => $transport_feemaster_value) {
-                    $trns_data_insert[] = array(
-                        'student_session_id'     => $student_session_id,
-                        'route_pickup_point_id'  => $route_pickup_point_id,
-                        'transport_feemaster_id' => $transport_feemaster_value,
-
-                    );
-                }
-
-                $student_session_is = $this->studenttransportfee_model->update($trns_data_insert, $student_session_id);
-            } else {
-                $student_session_is = $this->studenttransportfee_model->update([], $student_session_id);
-            }
-
-            if (isset($siblings_counts) && ($total_siblings == $siblings_counts)) {
-                //if there is no change in sibling
-            } else if (!isset($siblings_counts) && $sibling_id == 0 && $total_siblings > 0) {
-                // add for new parent
-                $parent_password = $this->role->get_random_password($chars_min = 6, $chars_max = 6, $use_upper_case = false, $include_numbers = true, $include_special_chars = false);
-
-                $data_parent_login = array(
-                    'username' => $this->parent_login_prefix . $student_id . "_1",
-                    'password' => $parent_password,
-                    'user_id'  => "",
-                    'role'     => 'parent',
-                );
-
-                $update_student = array(
-                    'id'        => $student_id,
-                    'parent_id' => 0,
-                );
-                $ins_id = $this->user_model->addNewParent($data_parent_login, $update_student);
-            } else if ($sibling_id != 0) {
-                //join to student with new parent
-                $student_sibling = $this->student_model->get($sibling_id);
-                $update_student  = array(
-                    'id'        => $student_id,
-                    'parent_id' => $student_sibling['parent_id'],
-                );
-                $student_sibling = $this->student_model->add($update_student);
-            } else {
-            }
-
-            //delete feed discount//
-            $this->feediscount_model->delete_assigned_discount($student_session_id);
-            //delete feed discount//
-
-            //*** assign fees discount ***//
-            $discount_id = $this->input->post('discount_id[]');
-            if (!empty($discount_id)) {
-                foreach ($discount_id as $key => $value) {
-                    $insert_array = array(
-                        'student_session_id' => $student_session_id,
-                        'fees_discount_id'   => $value,
-                    );
-
-                    $this->feediscount_model->allotdiscount($insert_array);
-                }
-            }
-            //*** assign fees discount ***//  
-
-            //generate student id card
-            $student_details  = $this->student_model->get($id);
-            $scan_type = $this->sch_setting_detail->scan_code_type;
-            $this->customlib->generatebarcode($student_details['admission_no'], $student_details['id'], $scan_type);
-            //generate student id card
-
-            $this->session->set_flashdata('msg', '<div student="alert alert-success text-left">' . $this->lang->line('update_message') . '</div>');
-            redirect('student/search');
-        }
-    }
+	public function edit($id)
+	{
+
+		if (!$this->rbac->hasPrivilege('student', 'can_edit')) {
+			access_denied();
+		}
+		$data['title']                 = $this->lang->line('edit_student');
+		$data['id']                    = $id;
+		$student                       = $this->student_model->get($id);
+		$genderList                    = $this->customlib->getGender();
+		$data['student']               = $student;
+		$data["month"]                 = $this->customlib->getMonthDropdown();
+		$data['feesessiongroup_model'] = $this->feesessiongroup_model->getFeesByGroupByStudent($student['student_session_id']);
+
+		$data['adm_auto_insert'] = $this->sch_setting_detail->adm_auto_insert;
+		$data['genderList']      = $genderList;
+		$session                 = $this->setting_model->getCurrentSession();
+		$data['transport_fees']  = $this->studenttransportfee_model->getTransportFeeByStudentSession($student['student_session_id'], $student['route_pickup_point_id']);
+		$vehroute_result         = $this->vehroute_model->getRouteVehiclesList();
+		$data['vehroutelist']    = $vehroute_result;
+		$class                   = $this->class_model->get();
+		$setting_result          = $this->setting_model->get();
+
+		$data["student_categorize"] = 'class';
+		$data['classlist']          = $class;
+		$category                   = $this->category_model->get();
+		$data['categorylist']       = $category;
+		$hostelList                 = $this->hostel_model->get();
+		$data['hostelList']         = $hostelList;
+		$houses                     = $this->student_model->gethouselist();
+		$data['houses']             = $houses;
+		$data["bloodgroup"]         = $this->blood_group;
+		$siblings                   = $this->student_model->getMySiblings($student['parent_id'], $student['id']);
+		$data['siblings']           = $siblings;
+		$data['siblings_counts']    = count($siblings);
+		$custom_fields              = $this->customfield_model->getByBelong('students');
+		$data['sch_setting']        = $this->sch_setting_detail;
+
+		//***fees discount***//
+		$data['student_fees_discount']  = $this->feediscount_model->getStudentFeesDiscount($student['student_session_id']); //edit
+		$feesdiscount_result            = $this->feediscount_model->get();
+		$data['feediscountList']        = $feesdiscount_result;
+		//***fees discount***//
+
+		foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
+			if ($custom_fields_value['validation']) {
+				$custom_fields_id   = $custom_fields_value['id'];
+				$custom_fields_name = $custom_fields_value['name'];
+				$this->form_validation->set_rules("custom_fields[students][" . $custom_fields_id . "]", $custom_fields_name, 'trim|required');
+			}
+		}
+
+		$this->form_validation->set_rules('firstname', $this->lang->line('first_name'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('dob', $this->lang->line('date_of_birth'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('gender', $this->lang->line('gender'), 'trim|required|xss_clean');
+
+		if ($this->sch_setting_detail->guardian_name) {
+			$this->form_validation->set_rules('guardian_name', $this->lang->line('guardian_name'), 'trim|required|xss_clean');
+			$this->form_validation->set_rules('guardian_is', $this->lang->line('guardian'), 'trim|required|xss_clean');
+		}
+
+		if ($this->sch_setting_detail->guardian_phone) {
+			$this->form_validation->set_rules('guardian_phone', $this->lang->line('guardian_phone'), 'trim|required|xss_clean');
+		}
+
+		$this->form_validation->set_rules(
+			'email',
+			$this->lang->line('email'),
+			array(
+				'valid_email',
+				array('check_student_email_exists', array($this->student_model, 'check_student_email_exists')),
+			)
+		);
+
+		$this->form_validation->set_rules(
+			'mobileno',
+			$this->lang->line('mobile_no'),
+			array(
+				'xss_clean',
+				array('check_student_mobile_exists', array($this->student_model, 'check_student_mobile_no_exists')),
+			)
+		);
+
+		if (!$this->sch_setting_detail->adm_auto_insert) {
+
+			$this->form_validation->set_rules('admission_no', $this->lang->line('admission_no'), array('required', array('check_admission_no_exists', array($this->student_model, 'valid_student_admission_no'))));
+		}
+
+		$this->form_validation->set_rules('file', $this->lang->line('image'), 'callback_handle_upload[file]');
+
+		$this->form_validation->set_rules('father_pic', $this->lang->line('image'), 'callback_handle_father_upload[father_pic]');
+		$this->form_validation->set_rules('mother_pic', $this->lang->line('image'), 'callback_handle_mother_upload[mother_pic]');
+		$this->form_validation->set_rules('guardian_pic', $this->lang->line('image'), 'callback_handle_guardian_upload[guardian_pic]');
+
+		$transport_feemaster_id = $this->input->post('transport_feemaster_id');
+
+		if (!empty($transport_feemaster_id)) {
+			$this->form_validation->set_rules('vehroute_id', $this->lang->line('route_list'), 'trim|required|xss_clean');
+			$this->form_validation->set_rules('route_pickup_point_id', $this->lang->line('pickup_point'), 'trim|required|xss_clean');
+			$this->form_validation->set_rules('transport_feemaster_id[]', $this->lang->line('fees_month'), 'trim|required|xss_clean');
+		}
+
+		if ($this->form_validation->run() == false) {
+			$this->load->view('layout/header', $data);
+			$this->load->view('student/studentEdit', $data);
+			$this->load->view('layout/footer', $data);
+		} else {
+			$prev_fees_group   = array();
+			$fee_session_group = array();
+
+			$custom_field_post = $this->input->post("custom_fields[students]");
+			if (isset($custom_field_post)) {
+				$custom_value_array = array();
+				foreach ($custom_field_post as $key => $value) {
+					$check_field_type = $this->input->post("custom_fields[students][" . $key . "]");
+					$field_value      = is_array($check_field_type) ? implode(",", $check_field_type) : $check_field_type;
+					$array_custom     = array(
+						'belong_table_id' => $id,
+						'custom_field_id' => $key,
+						'field_value'     => $field_value,
+					);
+					$custom_value_array[] = $array_custom;
+				}
+				$this->customfield_model->updateRecord($custom_value_array, $id, 'students');
+			}
+			$student_id = $this->input->post('student_id');
+			$student    = $this->student_model->get($student_id);
+
+			$sibling_id            = $this->input->post('sibling_id');
+			$siblings_counts       = $this->input->post('siblings_counts');
+			$siblings              = $this->student_model->getMySiblings($student['parent_id'], $student_id);
+			$total_siblings        = count($siblings);
+			$class_id              = $this->input->post('class_id');
+			$section_id            = $this->input->post('section_id');
+			$hostel_room_id        = $this->input->post('hostel_room_id');
+			$fees_discount         = $this->input->post('fees_discount');
+			$route_pickup_point_id = $this->input->post('route_pickup_point_id');
+
+			if (empty($route_pickup_point_id)) {
+				$route_pickup_point_id = null;
+			}
+
+			if (empty($hostel_room_id)) {
+				$hostel_room_id = 0;
+			}
+			$vehroute_id = $this->input->post('vehroute_id');
+			if (empty($vehroute_id)) {
+				$vehroute_id = null;
+			}
+			$data = array(
+				'id'                => $id,
+				'firstname'         => $this->input->post('firstname'),
+				'bnname'            => $this->input->post('bnname'),
+				'rte'               => $this->input->post('rte'),
+				'state'             => $this->input->post('state'),
+				'city'              => $this->input->post('city'),
+				'pincode'           => $this->input->post('pincode'),
+				'cast'              => $this->input->post('cast'),
+				'previous_school'   => $this->input->post('previous_school'),
+				'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
+				'current_village'   => $this->input->post('current_village'),
+				'current_ward_no'   => $this->input->post('current_ward_no'),
+				'current_post'      => $this->input->post('current_post'),
+				'current_upazila'   => $this->input->post('current_upazila'),
+				'current_district'  => $this->input->post('current_district'),
+				'permanent_village' => $this->input->post('permanent_village'),
+				'permanent_ward_no' => $this->input->post('permanent_ward_no'),
+				'permanent_post'    => $this->input->post('permanent_post'),
+				'permanent_upazila' => $this->input->post('permanent_upazila'),
+				'permanent_district'=> $this->input->post('permanent_district'),
+				'current_address'   => $this->input->post('current_address'),
+				'permanent_address' => $this->input->post('permanent_address'),
+				'adhar_no'          => $this->input->post('adhar_no'),
+				'samagra_id'        => $this->input->post('samagra_id'),
+				'bank_account_no'   => $this->input->post('bank_account_no'),
+				'bank_name'         => $this->input->post('bank_name'),
+				'ifsc_code'         => $this->input->post('ifsc_code'),
+				'guardian_email'    => $this->input->post('guardian_email'),
+				'gender'            => $this->input->post('gender'),
+				'guardian_name'     => $this->input->post('guardian_name'),
+				'guardian_relation' => $this->input->post('guardian_relation'),
+				'guardian_phone'    => $this->input->post('guardian_phone'),
+				'guardian_address'  => $this->input->post('guardian_address'),
+				'hostel_room_id'    => $hostel_room_id,
+				'note'              => $this->input->post('note'),
+				'is_active'         => 'yes',
+			);
+			if ($this->sch_setting_detail->guardian_occupation) {
+				$data['guardian_occupation'] = $this->input->post('guardian_occupation');
+			}
+			$house             = $this->input->post('house');
+			$blood_group       = $this->input->post('blood_group');
+			$measurement_date  = $this->input->post('measure_date');
+			$roll_no           = $this->input->post('roll_no');
+			$lastname          = $this->input->post('lastname');
+			$middlename        = $this->input->post('middlename');
+			$category_id       = $this->input->post('category_id');
+			$religion          = $this->input->post('religion');
+			$mobileno          = $this->input->post('mobileno');
+			$email             = $this->input->post('email');
+			$admission_date    = $this->input->post('admission_date');
+			$height            = $this->input->post('height');
+			$weight            = $this->input->post('weight');
+			$father_name       = $this->input->post('father_name');
+			$father_phone      = $this->input->post('father_phone');
+			$father_occupation = $this->input->post('father_occupation');
+			$mother_name       = $this->input->post('mother_name');
+			$mother_phone      = $this->input->post('mother_phone');
+			$mother_occupation = $this->input->post('mother_occupation');
+
+			if ($this->sch_setting_detail->guardian_name) {
+				$data['guardian_is'] = $this->input->post('guardian_is');
+			}
+
+			if (isset($measurement_date)) {
+				$data['measurement_date'] = $this->customlib->dateFormatToYYYYMMDD($this->input->post('measure_date'));
+			}
+
+			if (isset($house)) {
+				$data['school_house_id'] = $this->input->post('house');
+			}
+
+			if (isset($blood_group)) {
+				$data['blood_group'] = $this->input->post('blood_group');
+			}
+
+			if (isset($roll_no)) {
+				$data['roll_no'] = $this->input->post('roll_no');
+			}
+
+			if (isset($lastname)) {
+				$data['lastname'] = $this->input->post('lastname');
+			}
+
+			if (isset($middlename)) {
+				$data['middlename'] = $this->input->post('middlename');
+			}
+
+			if (isset($category_id)) {
+				$data['category_id'] = $this->input->post('category_id');
+			}
+
+			if (isset($religion)) {
+				$data['religion'] = $this->input->post('religion');
+			}
+
+			if (isset($mobileno)) {
+				$data['mobileno'] = $this->input->post('mobileno');
+			}
+
+			if (isset($email)) {
+				$data['email'] = $this->input->post('email');
+			}
+
+			if (isset($admission_date)) {
+				$data['admission_date'] = $this->customlib->dateFormatToYYYYMMDD($this->input->post('admission_date'));
+			}
+
+			if (isset($height)) {
+				$data['height'] = $this->input->post('height');
+			}
+
+			if (isset($weight)) {
+				$data['weight'] = $this->input->post('weight');
+			}
+
+			if (isset($father_name)) {
+				$data['father_name'] = $this->input->post('father_name');
+			}
+
+			if (isset($father_phone)) {
+				$data['father_phone'] = $this->input->post('father_phone');
+			}
+
+			if (isset($father_occupation)) {
+				$data['father_occupation'] = $this->input->post('father_occupation');
+			}
+
+			if (isset($mother_name)) {
+				$data['mother_name'] = $this->input->post('mother_name');
+			}
+
+			if (isset($mother_phone)) {
+				$data['mother_phone'] = $this->input->post('mother_phone');
+			}
+
+			if (isset($mother_occupation)) {
+				$data['mother_occupation'] = $this->input->post('mother_occupation');
+			}
+
+			if (empty($_FILES["file"])) {
+				if ($this->input->post('gender') == 'Female') {
+					$data['image'] = 'uploads/student_images/default_female.jpg';
+				} else {
+					$data['image'] = 'uploads/student_images/default_male.jpg';
+				}
+			}
+
+			if (isset($_FILES["file"]) && !empty($_FILES['file']['name'])) {
+				$img_name      = $this->media_storage->fileupload("file", "./uploads/student_images/");
+				$data['image'] = "uploads/student_images/" . $img_name;
+			}
+
+			if (isset($_FILES["father_pic"]) && !empty($_FILES['father_pic']['name'])) {
+				$img_name           = $this->media_storage->fileupload("father_pic", "./uploads/student_images/");
+				$data['father_pic'] = "uploads/student_images/" . $img_name;
+			}
+
+			if (isset($_FILES["mother_pic"]) && !empty($_FILES['mother_pic']['name'])) {
+				$img_name           = $this->media_storage->fileupload("mother_pic", "./uploads/student_images/");
+				$data['mother_pic'] = "uploads/student_images/" . $img_name;
+			}
+
+			if (isset($_FILES["guardian_pic"]) && !empty($_FILES['guardian_pic']['name'])) {
+				$img_name             = $this->media_storage->fileupload("guardian_pic", "./uploads/student_images/");
+				$data['guardian_pic'] = "uploads/student_images/" . $img_name;
+			}
+
+			if (!$this->sch_setting_detail->adm_auto_insert) {
+				$data['admission_no'] = $this->input->post('admission_no');
+			}
+
+			$data['created_by'] = $this->session->userdata['admin']['id'];
+
+			$this->student_model->add($data);
+			$data_new = array(
+				'student_id'            => $id,
+				'class_id'              => $class_id,
+				'section_id'            => $section_id,
+				'session_id'            => $session,
+				'fees_discount'         => $fees_discount,
+				'route_pickup_point_id' => $route_pickup_point_id,
+				'vehroute_id'           => $vehroute_id,
+			);
+
+			$insert_id = $this->student_model->add_student_session($data_new);
+
+			if ($this->input->post('prev_fees_group')) {
+				$prev_fees_group = $this->input->post('prev_fees_group');
+			}
+
+			if ($this->input->post('fee_session_group_id')) {
+				$fee_session_group = $this->input->post('fee_session_group_id');
+			}
+
+			$delete_fee_session_group = array_diff($prev_fees_group, $fee_session_group);
+			$add_fee_session_group    = array_diff($fee_session_group, $prev_fees_group);
+
+			$student_session_id     = $this->input->post('student_session_id');
+			$transport_feemaster_id = $this->input->post('transport_feemaster_id');
+			$this->studentfeemaster_model->assign_bulk_fees($add_fee_session_group, $student_session_id, $delete_fee_session_group);
+
+			if (!empty($transport_feemaster_id)) {
+				$trns_data_insert = array();
+				foreach ($transport_feemaster_id as $transport_feemaster_key => $transport_feemaster_value) {
+					$trns_data_insert[] = array(
+						'student_session_id'     => $student_session_id,
+						'route_pickup_point_id'  => $route_pickup_point_id,
+						'transport_feemaster_id' => $transport_feemaster_value,
+
+					);
+				}
+
+				$student_session_is = $this->studenttransportfee_model->update($trns_data_insert, $student_session_id);
+			} else {
+				$student_session_is = $this->studenttransportfee_model->update([], $student_session_id);
+			}
+
+			if (isset($siblings_counts) && ($total_siblings == $siblings_counts)) {
+				//if there is no change in sibling
+			} else if (!isset($siblings_counts) && $sibling_id == 0 && $total_siblings > 0) {
+				// add for new parent
+				$parent_password = $this->role->get_random_password($chars_min = 6, $chars_max = 6, $use_upper_case = false, $include_numbers = true, $include_special_chars = false);
+
+				$data_parent_login = array(
+					'username' => $this->parent_login_prefix . $student_id . "_1",
+					'password' => $parent_password,
+					'user_id'  => "",
+					'role'     => 'parent',
+				);
+
+				$update_student = array(
+					'id'        => $student_id,
+					'parent_id' => 0,
+				);
+				$ins_id = $this->user_model->addNewParent($data_parent_login, $update_student);
+			} else if ($sibling_id != 0) {
+				//join to student with new parent
+				$student_sibling = $this->student_model->get($sibling_id);
+				$update_student  = array(
+					'id'        => $student_id,
+					'parent_id' => $student_sibling['parent_id'],
+				);
+				$student_sibling = $this->student_model->add($update_student);
+			} else {
+			}
+
+			//delete feed discount//
+			$this->feediscount_model->delete_assigned_discount($student_session_id);
+			//delete feed discount//
+
+			//*** assign fees discount ***//
+			$discount_id = $this->input->post('discount_id[]');
+			if (!empty($discount_id)) {
+				foreach ($discount_id as $key => $value) {
+					$insert_array = array(
+						'student_session_id' => $student_session_id,
+						'fees_discount_id'   => $value,
+					);
+
+					$this->feediscount_model->allotdiscount($insert_array);
+				}
+			}
+			//*** assign fees discount ***//
+
+			//generate student id card
+			$student_details  = $this->student_model->get($id);
+			$scan_type = $this->sch_setting_detail->scan_code_type;
+			$this->customlib->generatebarcode($student_details['admission_no'], $student_details['id'], $scan_type);
+			//generate student id card
+
+			$this->session->set_flashdata('msg', '<div student="alert alert-success text-left">' . $this->lang->line('update_message') . '</div>');
+			redirect('student/search');
+		}
+	}
 
     public function bulkdelete()
     {
@@ -2363,119 +2363,114 @@ class Student extends Admin_Controller
         echo json_encode($array);
     }
 
-    public function dtstudentlist()
-    {
-        $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
-        $class           = $this->input->post('class_id');
-        $section         = $this->input->post('section_id');
-        $search_text     = $this->input->post('search_text');
-        $search_type     = $this->input->post('srch_type');
-        $classlist       = $this->class_model->get();
-        $classlist       = $classlist;
-        $carray          = array();
-        if (!empty($classlist)) {
-            foreach ($classlist as $ckey => $cvalue) {
-                $carray[] = $cvalue["id"];
-            }
-        }
+	public function dtstudentlist()
+	{
+		$currency_symbol = $this->customlib->getSchoolCurrencyFormat();
+		$class           = $this->input->post('class_id');
+		$section         = $this->input->post('section_id');
+		$search_text     = $this->input->post('search_text');
+		$search_type     = $this->input->post('srch_type');
+		$classlist       = $this->class_model->get();
+		$classlist       = $classlist;
+		$carray          = array();
+		if (!empty($classlist)) {
+			foreach ($classlist as $ckey => $cvalue) {
+				$carray[] = $cvalue["id"];
+			}
+		}
 
-        $sch_setting = $this->sch_setting_detail;
+		$sch_setting = $this->sch_setting_detail;
 
-        if ($search_type == "search_filter") {
+		if ($search_type == "search_filter") {
 
-            $resultlist = $this->student_model->searchdtByClassSection($class, $section);
-        } elseif ($search_type == "search_full") {
+			$resultlist = $this->student_model->searchdtByClassSection($class, $section);
+		} elseif ($search_type == "search_full") {
 
-            $resultlist = $this->student_model->searchFullText($search_text, $carray);
-        }
+			$resultlist = $this->student_model->searchFullText($search_text, $carray);
+		}
 
-        $students = array();
-        $students = json_decode($resultlist);
+		$students = array();
+		$students = json_decode($resultlist);
 
-        $dt_data = array();
-        $fields  = $this->customfield_model->get_custom_fields('students', 1);
+		$dt_data = array();
+		$fields  = $this->customfield_model->get_custom_fields('students', 1);
 
-        if (!empty($students->data)) {
-            foreach ($students->data as $student_key => $student) {
+		if (!empty($students->data)) {
+			foreach ($students->data as $student_key => $student) {
 
-                $editbtn    = '';
-                $deletebtn  = '';
-                $viewbtn    = '';
-                $collectbtn = '';
-                $print_button="";
+				$editbtn    = '';
+				$deletebtn  = '';
+				$viewbtn    = '';
+				$collectbtn = '';
+				$print_button = "";
 
-                $viewbtn = "<div class='white-space-nowrap'><a href='" . base_url() . "student/view/" . $student->id . "'   class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('view') . "'><i class='fa fa-reorder'></i></a>";
+				$viewbtn = "<div class='white-space-nowrap'><a href='" . base_url() . "student/view/" . $student->id . "'   class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('view') . "'><i class='fa fa-reorder'></i></a>";
 
-                if ($this->rbac->hasPrivilege('student', 'can_edit')) {
-                    $editbtn = "<a href='" . base_url() . "student/edit/" . $student->id . "'   class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('edit') . "'><i class='fa fa-pencil'></i></a>";
-                }
-                if ($this->module_lib->hasActive('fees_collection') && $this->rbac->hasPrivilege('collect_fees', 'can_add')) {
+				if ($this->rbac->hasPrivilege('student', 'can_edit')) {
+					$editbtn = "<a href='" . base_url() . "student/edit/" . $student->id . "'   class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('edit') . "'><i class='fa fa-pencil'></i></a>";
+				}
+				if ($this->module_lib->hasActive('fees_collection') && $this->rbac->hasPrivilege('collect_fees', 'can_add')) {
 
-                    $collectbtn = "<a href='" . base_url() . "studentfee/addfee/" . $student->student_session_id . "'   class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('add_fees') . "'><span >" . $currency_symbol . "</a>";
-                }
+					$collectbtn = "<a href='" . base_url() . "studentfee/addfee/" . $student->student_session_id . "'   class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('add_fees') . "'><span >" . $currency_symbol . "</a>";
+				}
 
-                $loading="<i class='fa fa-circle-o-notch fa-spin'></i>";
-                $print_button='<a type="button" class="btn btn-default btn-xs print_student_details shadow-none" data-student_id="'.$student->id.'" data-student_name="'.$this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname).'" data-admission_no="'.$student->admission_no.'" data-action="download" data-placement="bottom" data-toggle="tooltip" 
-                        data-original-title="print"  data-loading-text="'.$loading.'" ><i class="fa fa-print"></i></a></div>';
+				$loading = "<i class='fa fa-circle-o-notch fa-spin'></i>";
+				$print_button = '<a type="button" class="btn btn-default btn-xs print_student_details shadow-none" data-student_id="' . $student->id . '" data-student_name="' . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . '" data-admission_no="' . $student->admission_no . '" data-action="download" data-placement="bottom" data-toggle="tooltip" 
+                        data-original-title="print"  data-loading-text="' . $loading . '" ><i class="fa fa-print"></i></a></div>';
 
-	            $row   = array();
-	            $row[] = $student->admission_no;
-	            $row[] = "<a href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
-	            $row[] = $student->bnname ?? '';
-	            $row[] = $student->current_village ?? '';
-	            $row[] = $student->current_upazila ?? '';
-	            $row[] = $student->current_district ?? '';
-	            $row[] = $student->permanent_village ?? '';
-	            $row[] = $student->permanent_upazila ?? '';
-	            $row[] = $student->permanent_district ?? '';
+				// ---- Row data (must match studentSearch.php <thead> exactly) ----
+				$row   = array();
+				$row[] = $student->admission_no;
+				$row[] = "<a href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
 				$row[] = $student->roll_no;
-                $row[] = $student->class . "(" . $student->section . ")";
-                if ($sch_setting->father_name) {
-                    $row[] = $student->father_name;
-                }
+				$row[] = $student->class . "(" . $student->section . ")";
 
-                $row[] = $this->customlib->dateformat($student->dob);
+				if ($sch_setting->father_name) {
+					$row[] = $student->father_name;
+				}
 
-                if (!empty($student->gender)) {
-                    $row[] = $this->lang->line(strtolower($student->gender));
-                } else {
-                    $row[] = '';
-                }
+				$row[] = $this->customlib->dateformat($student->dob);
 
-                if ($sch_setting->category) {
-                    $row[] = $student->category;
-                }
-                if ($sch_setting->mobile_no) {
-                    $row[] = $student->mobileno;
-                }
+				if (!empty($student->gender)) {
+					$row[] = $this->lang->line(strtolower($student->gender));
+				} else {
+					$row[] = '';
+				}
 
-                foreach ($fields as $fields_key => $fields_value) {
+				if ($sch_setting->category) {
+					$row[] = $student->category;
+				}
+				if ($sch_setting->mobile_no) {
+					$row[] = $student->mobileno;
+				}
 
-                    $custom_name   = $fields_value->name;
-                    $display_field = $student->$custom_name;
-                    if ($fields_value->type == "link") {
-                        $display_field = "<a href=" . $student->$custom_name . " target='_blank'>" . $student->$custom_name . "</a>";
-                    }
-                    $row[] = $display_field;
-                }
+				foreach ($fields as $fields_key => $fields_value) {
 
-                $row[] = $viewbtn . '' . $editbtn . '' . $collectbtn.''.$print_button;
+					$custom_name   = $fields_value->name;
+					$display_field = $student->$custom_name;
+					if ($fields_value->type == "link") {
+						$display_field = "<a href=" . $student->$custom_name . " target='_blank'>" . $student->$custom_name . "</a>";
+					}
+					$row[] = $display_field;
+				}
 
-                $dt_data[] = $row;
-            }
-        }
-        $sch_setting         = $this->sch_setting_detail;
-        $student_detail_view = $this->load->view('student/_searchDetailView', array('sch_setting' => $sch_setting, 'students' => $students), true);
-        $json_data           = array(
-            "draw"                => intval($students->draw),
-            "recordsTotal"        => intval($students->recordsTotal),
-            "recordsFiltered"     => intval($students->recordsFiltered),
-            "data"                => $dt_data,
-            "student_detail_view" => $student_detail_view,
-        );
+				$row[] = $viewbtn . '' . $editbtn . '' . $collectbtn . '' . $print_button;
 
-        echo json_encode($json_data);
-    }
+				$dt_data[] = $row;
+			}
+		}
+		$sch_setting         = $this->sch_setting_detail;
+		$student_detail_view = $this->load->view('student/_searchDetailView', array('sch_setting' => $sch_setting, 'students' => $students), true);
+		$json_data           = array(
+			"draw"                => intval($students->draw),
+			"recordsTotal"        => intval($students->recordsTotal),
+			"recordsFiltered"     => intval($students->recordsFiltered),
+			"data"                => $dt_data,
+			"student_detail_view" => $student_detail_view,
+		);
+
+		echo json_encode($json_data);
+	}
 
     //datatable function to check search parameter validation
     public function searchvalidation()
