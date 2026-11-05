@@ -126,7 +126,7 @@ if ($student['gender'] == $key) {
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('date_of_birth'); ?></label><small class="req"> *</small>
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('date_of_birth'); ?></label>
                                                 <?php
 $dob = "";
 if ($student['dob'] != '0000-00-00' && $student['dob'] != '') {

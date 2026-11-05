@@ -27,6 +27,18 @@ class Student extends Admin_Controller
         $this->staff_attendance = $this->config->item('staffattendance');
     }
 
+	private function safe_date($date)
+	{
+		if (empty($date) || $date == '0000-00-00' || $date == '1970-01-01') {
+			return null;
+		}
+		$formatted = $this->customlib->dateFormatToYYYYMMDD($date);
+		if (empty($formatted) || $formatted == '0000-00-00' || $formatted == '1970-01-01') {
+			return null;
+		}
+		return $formatted;
+	}
+
     public function index()
     {
         $data['title']       = 'Student List';
@@ -470,7 +482,7 @@ class Student extends Admin_Controller
         $this->form_validation->set_rules('fifth_doc', $this->lang->line('image'), 'callback_handle_uploadfordoc[fifth_doc]');
         $this->form_validation->set_rules('firstname', $this->lang->line('first_name'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('gender', $this->lang->line('gender'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('dob', $this->lang->line('date_of_birth'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('dob', $this->lang->line('date_of_birth'), 'trim|xss_clean');
         $this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
 
@@ -581,7 +593,8 @@ class Student extends Admin_Controller
 						'pincode'           => $this->input->post('pincode'),
 						'cast'              => $this->input->post('cast'),
 						'previous_school'   => $this->input->post('previous_school'),
-						'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
+//						'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
+						'dob' => $this->safe_date($this->input->post('dob')),
 						'current_village' => $this->input->post('current_village'),
 						'current_ward_no' => $this->input->post('current_ward_no'),
 						'current_post' => $this->input->post('current_post'),
@@ -1414,7 +1427,7 @@ class Student extends Admin_Controller
 		}
 
 		$this->form_validation->set_rules('firstname', $this->lang->line('first_name'), 'trim|required|xss_clean');
-		$this->form_validation->set_rules('dob', $this->lang->line('date_of_birth'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('dob', $this->lang->line('date_of_birth'), 'trim|xss_clean');
 		$this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
 		$this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
 		$this->form_validation->set_rules('gender', $this->lang->line('gender'), 'trim|required|xss_clean');
@@ -1522,7 +1535,8 @@ class Student extends Admin_Controller
 				'pincode'           => $this->input->post('pincode'),
 				'cast'              => $this->input->post('cast'),
 				'previous_school'   => $this->input->post('previous_school'),
-				'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
+//				'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
+				'dob' => $this->safe_date($this->input->post('dob')),
 				'current_village'   => $this->input->post('current_village'),
 				'current_ward_no'   => $this->input->post('current_ward_no'),
 				'current_post'      => $this->input->post('current_post'),
