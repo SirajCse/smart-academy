@@ -349,6 +349,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                         if ($.fn.DataTable.isDataTable('.student-list')) { // if exist datatable it will destrory first
                             $('.student-list').DataTable().destroy();
                         }
+
                         table = $('.student-list').DataTable({
 
                             dom: 'Bfrtip',
@@ -414,10 +415,43 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                 }
                             ],
 
+                            // --- START FIX: Explicitly define columns to match PHP Header ---
                             "columnDefs": [{
                                 "targets": -1,
                                 "orderable": false
                             }],
+
+                            "columns": [
+                                { "data": "admission_no", "name": "admission_no" }, // 0
+                                { "data": "student_name", "name": "student_name" }, // 1
+                                { "data": "roll_no", "name": "roll_no" },           // 2
+                                { "data": "class", "name": "class" },               // 3
+
+                                <?php if ($sch_setting->father_name) { ?>
+                                { "data": "father_name", "name": "father_name" },   // 4
+                                <?php } ?>
+
+                                { "data": "dob", "name": "dob" },                   // 5
+                                { "data": "gender", "name": "gender" },             // 6
+
+                                <?php if ($sch_setting->category) { ?>
+                                { "data": "category", "name": "category" },         // 7
+                                <?php } ?>
+
+                                <?php if ($sch_setting->mobile_no) { ?>
+                                { "data": "mobile_no", "name": "mobile_no" },       // 8
+                                <?php } ?>
+
+                                <?php
+                                if (!empty($fields)) {
+                                foreach ($fields as $fields_key => $fields_value) { ?>
+                                { "data": "<?php echo $fields_value->name; ?>", "name": "<?php echo $fields_value->name; ?>" },
+                                <?php }
+                                } ?>
+
+                                { "data": "action", "name": "action", "orderable": false } // Last
+                            ],
+                            // --- END FIX ---
 
                             "language": {
                                 processing: '<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span> '
