@@ -415,43 +415,48 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                 }
                             ],
 
-                            // --- START FIX: Explicitly define columns to match PHP Header ---
-                            "columnDefs": [{
-                                "targets": -1,
-                                "orderable": false
-                            }],
-
+                            // ============================================================
+                            // FIXED: use numeric indexes (positional arrays from server)
+                            // because dtstudentlist returns arrays, not keyed objects.
+                            // ============================================================
                             "columns": [
-                                { "data": "admission_no", "name": "admission_no" }, // 0
-                                { "data": "student_name", "name": "student_name" }, // 1
-                                { "data": "roll_no", "name": "roll_no" },           // 2
-                                { "data": "class", "name": "class" },               // 3
+                                { "data": 0, "name": "admission_no" },   // 0 admission_no
+                                { "data": 1, "name": "student_name" },   // 1 student_name
+                                { "data": 2, "name": "roll_no" },        // 2 roll_no
+                                { "data": 3, "name": "class" },          // 3 class
 
                                 <?php if ($sch_setting->father_name) { ?>
-                                { "data": "father_name", "name": "father_name" },   // 4
+                                { "data": 4, "name": "father_name" },    // 4 father_name
                                 <?php } ?>
 
-                                { "data": "dob", "name": "dob" },                   // 5
-                                { "data": "gender", "name": "gender" },             // 6
+                                { "data": <?php echo ($sch_setting->father_name ? 5 : 4); ?>, "name": "dob" },
+                                { "data": <?php echo ($sch_setting->father_name ? 6 : 5); ?>, "name": "gender" },
 
                                 <?php if ($sch_setting->category) { ?>
-                                { "data": "category", "name": "category" },         // 7
+                                { "data": <?php echo 4 + ($sch_setting->father_name ? 1 : 0) + 2; ?>, "name": "category" },
                                 <?php } ?>
 
                                 <?php if ($sch_setting->mobile_no) { ?>
-                                { "data": "mobile_no", "name": "mobile_no" },       // 8
+                                { "data": <?php echo 4 + ($sch_setting->father_name ? 1 : 0) + 2 + ($sch_setting->category ? 1 : 0); ?>, "name": "mobile_no" },
                                 <?php } ?>
 
                                 <?php
+                                $nextIndex = 4
+                                        + ($sch_setting->father_name ? 1 : 0)
+                                        + 2
+                                        + ($sch_setting->category ? 1 : 0)
+                                        + ($sch_setting->mobile_no ? 1 : 0);
+
                                 if (!empty($fields)) {
                                 foreach ($fields as $fields_key => $fields_value) { ?>
-                                { "data": "<?php echo $fields_value->name; ?>", "name": "<?php echo $fields_value->name; ?>" },
-                                <?php }
+                                { "data": <?php echo $nextIndex; ?>, "name": "custom_<?php echo $fields_value->id; ?>" },
+                                <?php
+                                $nextIndex++;
+                                }
                                 } ?>
 
-                                { "data": "action", "name": "action", "orderable": false } // Last
+                                { "data": <?php echo $nextIndex; ?>, "name": "action", "orderable": false }
                             ],
-                            // --- END FIX ---
 
                             "language": {
                                 processing: '<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span> '
