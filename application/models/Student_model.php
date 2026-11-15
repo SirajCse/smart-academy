@@ -1456,6 +1456,42 @@ class Student_model extends MY_Model
         }
     }
 
+	/**
+	 * NEW: Fetch a school house by its name.
+	 * Used by Student::import() to resolve a text label from CSV
+	 * to its numeric school_house_id.
+	 *
+	 * @param string $name
+	 * @return array|null
+	 */
+	public function gethouselist_by_name($name)
+	{
+		$name = trim($name);
+
+		if ($name === '' || $name === null) {
+			return null;
+		}
+
+		$this->db->select('id, house_name');
+		$this->db->from('school_houses');
+		$this->db->where('LOWER(house_name)', strtolower($name));
+		$this->db->limit(1);
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			return $query->row_array();
+		}
+
+		// Fallback for case-sensitive collations
+		$this->db->select('id, house_name');
+		$this->db->from('school_houses');
+		$this->db->where('house_name', $name);
+		$this->db->limit(1);
+		$query = $this->db->get();
+
+		return $query->num_rows() > 0 ? $query->row_array() : null;
+	}
+
     public function gethouselist()
     {
         $query = $this->db->where("is_active", "yes")->get("school_houses");

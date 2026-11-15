@@ -1137,7 +1137,7 @@ class Student extends Admin_Controller
         $msg = $this->mailsmsconf->mailsms('student_login_credential', $parent_login_detail);
     }
 
-    public function import()
+    public function importOld()
     {
         if (!$this->rbac->hasPrivilege('import_student', 'can_view')) {
             access_denied();
@@ -1332,6 +1332,286 @@ class Student extends Admin_Controller
             redirect('student/import');
         }
     }
+
+	public function import()
+	{
+		if (!$this->rbac->hasPrivilege('import_student', 'can_view')) {
+			access_denied();
+		}
+		$data['title']      = $this->lang->line('import_student');
+		$data['title_list'] = $this->lang->line('recently_added_student');
+		$session            = $this->setting_model->getCurrentSession();
+		$class              = $this->class_model->get('', $classteacher = 'yes');
+		$data['classlist']  = $class;
+		$userdata           = $this->customlib->getUserData();
+
+		$category = $this->category_model->get();
+
+		$fields = array('admission_no', 'roll_no', 'firstname', 'bnname', 'middlename', 'lastname', 'gender', 'dob', 'category_id', 'religion', 'cast', 'mobileno', 'email', 'admission_date', 'blood_group', 'school_house_id', 'height', 'weight', 'measurement_date', 'father_name', 'father_phone', 'father_occupation', 'mother_name', 'mother_phone', 'mother_occupation', 'guardian_is', 'guardian_name', 'guardian_relation', 'guardian_email', 'guardian_phone', 'guardian_occupation', 'guardian_address', 'current_village', 'current_ward_no', 'current_post', 'current_upazila', 'current_district', 'current_address', 'permanent_village', 'permanent_ward_no', 'permanent_post', 'permanent_upazila', 'permanent_district', 'permanent_address', 'bank_account_no', 'bank_name', 'ifsc_code', 'adhar_no', 'samagra_id', 'rte', 'previous_school', 'note');
+
+		$data["fields"]       = $fields;
+		$data['categorylist'] = $category;
+
+		$this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('file', $this->lang->line('image'), 'callback_handle_csv_upload');
+
+		if ($this->form_validation->run() == false) {
+			$this->load->view('layout/header', $data);
+			$this->load->view('student/import', $data);
+			$this->load->view('layout/footer', $data);
+		} else {
+
+			$class_id   = $this->input->post('class_id');
+			$section_id = $this->input->post('section_id');
+			$session    = $this->setting_model->getCurrentSession();
+
+			if (isset($_FILES["file"]) && !empty($_FILES['file']['name'])) {
+				$ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+				if (strtolower($ext) == 'csv') {
+
+					// Read CSV directly: numeric rows, row 0 = header, BOM stripped
+					$fh     = fopen($_FILES['file']['tmp_name'], 'r');
+					$result = array();
+					while (($r = fgetcsv($fh)) !== false) {
+						$result[] = $r;
+					}
+					fclose($fh);
+					if (!empty($result)) {
+						$result[0][0] = preg_replace('/^\xEF\xBB\xBF/', '', $result[0][0]);
+					}
+
+					if (count($result) > 1) {
+
+						// Header-driven mapping (order independent)
+						$csv_headers = array_map(function ($h) {
+							return preg_replace('/\s+/', '_', strtolower(trim($h)));
+						}, $result[0]);
+
+						$header_to_field = array(
+							'admission_no'               => 'admission_no',
+							'roll_no'                    => 'roll_no',
+							'first_name'                 => 'firstname',
+							'firstname'                  => 'firstname',
+							'bnname'                     => 'bnname',
+							'bangla_name'                => 'bnname',
+							'middle_name'                => 'middlename',
+							'middlename'                 => 'middlename',
+							'last_name'                  => 'lastname',
+							'lastname'                   => 'lastname',
+							'gender'                     => 'gender',
+							'date_of_birth'              => 'dob',
+							'dob'                        => 'dob',
+							'category'                   => 'category_id',
+							'category_id'                => 'category_id',
+							'religion'                   => 'religion',
+							'caste'                      => 'cast',
+							'cast'                       => 'cast',
+							'mobile_no'                  => 'mobileno',
+							'mobileno'                   => 'mobileno',
+							'email'                      => 'email',
+							'admission_date'             => 'admission_date',
+							'blood_group'                => 'blood_group',
+							'student_house'              => 'school_house_id',
+							'house'                      => 'school_house_id',
+							'school_house_id'            => 'school_house_id',
+							'height'                     => 'height',
+							'weight'                     => 'weight',
+							'measurement_date'           => 'measurement_date',
+							'father_name'                => 'father_name',
+							'father_phone'               => 'father_phone',
+							'father_occupation'          => 'father_occupation',
+							'mother_name'                => 'mother_name',
+							'mother_phone'               => 'mother_phone',
+							'mother_occupation'          => 'mother_occupation',
+							'if_guardian_is'             => 'guardian_is',
+							'guardian_is'                => 'guardian_is',
+							'guardian_name'              => 'guardian_name',
+							'guardian_relation'          => 'guardian_relation',
+							'guardian_email'             => 'guardian_email',
+							'guardian_phone'             => 'guardian_phone',
+							'guardian_occupation'        => 'guardian_occupation',
+							'guardian_address'           => 'guardian_address',
+							'current_village'            => 'current_village',
+							'current_ward_no'            => 'current_ward_no',
+							'current_post'               => 'current_post',
+							'current_upazila'            => 'current_upazila',
+							'current_district'           => 'current_district',
+							'current_address'            => 'current_address',
+							'permanent_village'          => 'permanent_village',
+							'permanent_ward_no'          => 'permanent_ward_no',
+							'permanent_post'             => 'permanent_post',
+							'permanent_upazila'          => 'permanent_upazila',
+							'permanent_district'         => 'permanent_district',
+							'permanent_address'          => 'permanent_address',
+							'bank_account_no'            => 'bank_account_no',
+							'bank_name'                  => 'bank_name',
+							'ifsc_code'                  => 'ifsc_code',
+							'national_identification_no' => 'adhar_no',
+							'adhar_no'                   => 'adhar_no',
+							'local_identification_no'    => 'samagra_id',
+							'samagra_id'                 => 'samagra_id',
+							'rte'                        => 'rte',
+							'previous_school'            => 'previous_school',
+							'previous_school_details'    => 'previous_school',
+							'note'                       => 'note',
+						);
+
+						$rowcount = 0;
+						$total    = count($result) - 1; // minus header row
+
+						for ($i = 1; $i <= $total; $i++) {
+
+							if (empty($result[$i]) || count(array_filter($result[$i], 'strlen')) === 0) {
+								continue; // skip blank rows
+							}
+
+							$student_data = array('is_active' => 'yes');
+
+							foreach ($csv_headers as $col_index => $header_name) {
+								if ($header_name === '' || !isset($header_to_field[$header_name])) {
+									continue;
+								}
+
+								$db_field = $header_to_field[$header_name];
+								$value    = isset($result[$i][$col_index]) ? trim($result[$i][$col_index]) : '';
+
+								if ($db_field === 'category_id' && $value !== '' && !is_numeric($value)) {
+									$cat   = $this->category_model->getCategoryByLabel($value);
+									$value = !empty($cat) ? $cat['id'] : null;
+								}
+
+								if ($db_field === 'school_house_id' && $value !== '' && !is_numeric($value)) {
+									$house = $this->student_model->gethouselist_by_name($value);
+									$value = !empty($house) ? $house['id'] : null;
+								}
+
+								$student_data[$db_field] = is_string($value) ? $this->encoding_lib->toUTF8($value) : $value;
+							}
+
+							// Skip rows missing required values
+							if (empty($student_data['firstname']) || (!$this->sch_setting_detail->adm_auto_insert && empty($student_data['admission_no']))) {
+								continue;
+							}
+
+							// Strict YYYY-MM-DD dates, else NULL
+							foreach (array('dob', 'measurement_date', 'admission_date') as $df) {
+								$v = isset($student_data[$df]) ? $student_data[$df] : '';
+								if ($v !== '' && $v !== null) {
+									$ts = strtotime($v);
+									$student_data[$df] = ($ts && date('Y-m-d', $ts) === $v) ? $v : null;
+								} else {
+									$student_data[$df] = null;
+								}
+							}
+
+							// Default image by gender
+							if (empty($student_data['image'])) {
+								$student_data['image'] = (isset($student_data['gender']) && $student_data['gender'] == 'Female')
+									? 'uploads/student_images/default_female.jpg'
+									: 'uploads/student_images/default_male.jpg';
+							}
+
+							// Admission no logic
+							$data_setting                      = array();
+							$data_setting['id']                = $this->sch_setting_detail->id;
+							$data_setting['adm_auto_insert']   = $this->sch_setting_detail->adm_auto_insert;
+							$data_setting['adm_update_status'] = $this->sch_setting_detail->adm_update_status;
+
+							$adm_no = isset($student_data['admission_no']) ? $student_data['admission_no'] : '';
+
+							if ($this->sch_setting_detail->adm_auto_insert) {
+								if ($this->sch_setting_detail->adm_update_status) {
+									$last_student         = $this->student_model->lastRecord();
+									$last_admission_digit = str_replace($this->sch_setting_detail->adm_prefix, "", $last_student->admission_no);
+									$admission_no         = $this->sch_setting_detail->adm_prefix . sprintf("%0" . $this->sch_setting_detail->adm_no_digit . "d", $last_admission_digit + 1);
+								} else {
+									$admission_no = $this->sch_setting_detail->adm_prefix . $this->sch_setting_detail->adm_start_from;
+								}
+								$student_data['admission_no'] = $admission_no;
+
+								$admission_no_exists = $this->student_model->check_adm_exists($admission_no);
+								$insert_id           = $admission_no_exists ? "" : $this->student_model->add($student_data, $data_setting);
+							} else {
+								if ($this->form_validation->is_unique($adm_no, 'students.admission_no')) {
+									$insert_id = $this->student_model->add($student_data, $data_setting);
+								} else {
+									$insert_id = "";
+								}
+							}
+
+							if (!empty($insert_id)) {
+
+								$data_new = array(
+									'student_id' => $insert_id,
+									'class_id'   => $class_id,
+									'section_id' => $section_id,
+									'session_id' => $session,
+								);
+								$this->student_model->add_student_session($data_new);
+
+								$user_password = $this->role->get_random_password($chars_min = 6, $chars_max = 6, $use_upper_case = false, $include_numbers = true, $include_special_chars = false);
+
+								$data_student_login = array(
+									'username' => $this->student_login_prefix . $insert_id,
+									'password' => $user_password,
+									'user_id'  => $insert_id,
+									'role'     => 'student',
+								);
+								$this->user_model->add($data_student_login);
+
+								$parent_password = $this->role->get_random_password($chars_min = 6, $chars_max = 6, $use_upper_case = false, $include_numbers = true, $include_special_chars = false);
+
+								$data_parent_login = array(
+									'username' => $this->parent_login_prefix . $insert_id,
+									'password' => $parent_password,
+									'user_id'  => $insert_id,
+									'role'     => 'parent',
+									'childs'   => $insert_id,
+								);
+								$ins_id = $this->user_model->add($data_parent_login);
+
+								$this->student_model->add(array('id' => $insert_id, 'parent_id' => $ins_id));
+
+								// Mail / SMS
+								$mobile_no      = isset($student_data['mobileno']) ? $student_data['mobileno'] : '';
+								$email          = isset($student_data['email']) ? $student_data['email'] : '';
+								$guardian_phone = isset($student_data['guardian_phone']) ? $student_data['guardian_phone'] : '';
+								$guardian_email = isset($student_data['guardian_email']) ? $student_data['guardian_email'] : '';
+
+								$sender_details = array('student_id' => $insert_id, 'contact_no' => $guardian_phone, 'email' => $guardian_email);
+								$this->mailsmsconf->mailsms('student_admission', $sender_details);
+
+								$student_login_detail = array('id' => $insert_id, 'credential_for' => 'student', 'username' => $this->student_login_prefix . $insert_id, 'password' => $user_password, 'contact_no' => $mobile_no, 'email' => $email, 'admission_no' => $student_data['admission_no']);
+								$this->mailsmsconf->mailsms('student_login_credential', $student_login_detail);
+
+								$parent_login_detail = array('id' => $insert_id, 'credential_for' => 'parent', 'username' => $this->parent_login_prefix . $insert_id, 'password' => $parent_password, 'contact_no' => $guardian_phone, 'email' => $guardian_email, 'admission_no' => $student_data['admission_no']);
+								$this->mailsmsconf->mailsms('student_login_credential', $parent_login_detail);
+
+								// Barcode
+								$student_details = $this->student_model->get($insert_id);
+								$scan_type       = $this->sch_setting_detail->scan_code_type;
+								$this->customlib->generatebarcode($student_details['admission_no'], $student_details['id'], $scan_type);
+
+								$rowcount++;
+							} else {
+								$this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">' . $this->lang->line('record_already_exist') . ' - ' . $student_data['admission_no'] . '</div>');
+							}
+						}
+
+						$this->session->set_flashdata('msg', '<div class="alert alert-success text-center">' . $this->lang->line('total') . ' ' . $total . ' ' . $this->lang->line('records_found_in_csv_file_total') . $rowcount . ' ' . $this->lang->line('records_imported_successfully') . '</div>');
+
+					} else {
+						$this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">' . $this->lang->line('no_record_found') . '</div>');
+					}
+				} else {
+					$this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">' . $this->lang->line('please_upload_csv_file_only') . '</div>');
+				}
+			}
+
+			redirect('student/import');
+		}
+	}
 
     public function handle_csv_upload()
     {
