@@ -1333,11 +1333,61 @@ class Student extends Admin_Controller
         }
     }
 
+	/**
+	 * Convert flexible date formats into Y-m-d.
+	 *
+	 * Supported:
+	 *   Y-m-d, Y/m/d, Y.m.d
+	 *   d/m/Y, d-m-Y, d.m.Y  (default — Bangladesh)
+	 *   m/d/Y (auto-detected when unambiguous)
+	 *
+	 * Returns Y-m-d string, or NULL if the value is empty/invalid.
+	 */
+	function normalizeImportDate($value)
+	{
+		$value = trim((string) $value);
+
+		if ($value === '') {
+			return null;
+		}
+
+		if (!preg_match('/^(\d{1,4})[\/.-](\d{1,2})[\/.-](\d{1,4})$/', $value, $m)) {
+			// Fallback: try strtotime for odd formats (e.g. "20 Sep 2020")
+			$ts = strtotime($value);
+			return $ts ? date('Y-m-d', $ts) : null;
+		}
+
+		[, $a, $b, $c] = $m;
+
+		if (strlen($a) === 4) {
+			// Y-m-d
+			[$y, $mo, $d] = [(int) $a, (int) $b, (int) $c];
+		} else {
+			// Default D/M/Y
+			[$d, $mo, $y] = [(int) $a, (int) $b, (int) $c];
+
+			// Detect M/D/Y when unambiguous (month > 12 means first part must be day)
+			if ($mo > 12 && $d <= 12) {
+				[$d, $mo] = [$mo, $d];
+			}
+		}
+
+		if (checkdate($mo, $d, $y)) {
+			return sprintf('%04d-%02d-%02d', $y, $mo, $d);
+		}
+
+		// checkdate failed — try one more time via strtotime
+		// (handles typos like 20/29/2020 that strtotime may recover as 2020-09-20)
+		$ts = strtotime(str_replace(['/', '.'], '-', $value));
+		return $ts ? date('Y-m-d', $ts) : null;
+	}
+
 	public function import()
 	{
 		if (!$this->rbac->hasPrivilege('import_student', 'can_view')) {
 			access_denied();
 		}
+
 		$data['title']      = $this->lang->line('import_student');
 		$data['title_list'] = $this->lang->line('recently_added_student');
 		$session            = $this->setting_model->getCurrentSession();
@@ -1347,14 +1397,29 @@ class Student extends Admin_Controller
 
 		$category = $this->category_model->get();
 
-		$fields = array('admission_no', 'roll_no', 'firstname', 'bnname', 'middlename', 'lastname', 'gender', 'dob', 'category_id', 'religion', 'cast', 'mobileno', 'email', 'admission_date', 'blood_group', 'school_house_id', 'height', 'weight', 'measurement_date', 'father_name', 'father_phone', 'father_occupation', 'mother_name', 'mother_phone', 'mother_occupation', 'guardian_is', 'guardian_name', 'guardian_relation', 'guardian_email', 'guardian_phone', 'guardian_occupation', 'guardian_address', 'current_village', 'current_ward_no', 'current_post', 'current_upazila', 'current_district', 'current_address', 'permanent_village', 'permanent_ward_no', 'permanent_post', 'permanent_upazila', 'permanent_district', 'permanent_address', 'bank_account_no', 'bank_name', 'ifsc_code', 'adhar_no', 'samagra_id', 'rte', 'previous_school', 'note');
+		$fields = array(
+			'admission_no', 'roll_no', 'firstname', 'bnname', 'middlename', 'lastname',
+			'gender', 'dob', 'category_id', 'religion', 'cast', 'mobileno', 'email',
+			'admission_date', 'blood_group', 'school_house_id', 'height', 'weight',
+			'measurement_date', 'father_name', 'father_phone', 'father_occupation',
+			'mother_name', 'mother_phone', 'mother_occupation', 'guardian_is',
+			'guardian_name', 'guardian_relation', 'guardian_email', 'guardian_phone',
+			'guardian_occupation', 'guardian_address',
+			'current_village', 'current_ward_no', 'current_post', 'current_upazila',
+			'current_district', 'current_address',
+			'permanent_village', 'permanent_ward_no', 'permanent_post', 'permanent_upazila',
+			'permanent_district', 'permanent_address',
+			'bank_account_no', 'bank_name', 'ifsc_code',
+			'adhar_no', 'samagra_id',
+			'rte', 'previous_school', 'note',
+		);
 
 		$data["fields"]       = $fields;
 		$data['categorylist'] = $category;
 
-		$this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
+		$this->form_validation->set_rules('class_id',   $this->lang->line('class'),   'trim|required|xss_clean');
 		$this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
-		$this->form_validation->set_rules('file', $this->lang->line('image'), 'callback_handle_csv_upload');
+		$this->form_validation->set_rules('file',       $this->lang->line('image'),   'callback_handle_csv_upload');
 
 		if ($this->form_validation->run() == false) {
 			$this->load->view('layout/header', $data);
@@ -1383,14 +1448,17 @@ class Student extends Admin_Controller
 
 					if (count($result) > 1) {
 
-						// Header-driven mapping (order independent)
+						// Header-driven mapping (order-independent)
 						$csv_headers = array_map(function ($h) {
 							return preg_replace('/\s+/', '_', strtolower(trim($h)));
 						}, $result[0]);
 
 						$header_to_field = array(
+							// admission
 							'admission_no'               => 'admission_no',
 							'roll_no'                    => 'roll_no',
+
+							// name
 							'first_name'                 => 'firstname',
 							'firstname'                  => 'firstname',
 							'bnname'                     => 'bnname',
@@ -1399,6 +1467,8 @@ class Student extends Admin_Controller
 							'middlename'                 => 'middlename',
 							'last_name'                  => 'lastname',
 							'lastname'                   => 'lastname',
+
+							// basics
 							'gender'                     => 'gender',
 							'date_of_birth'              => 'dob',
 							'dob'                        => 'dob',
@@ -1418,12 +1488,16 @@ class Student extends Admin_Controller
 							'height'                     => 'height',
 							'weight'                     => 'weight',
 							'measurement_date'           => 'measurement_date',
+
+							// parents
 							'father_name'                => 'father_name',
 							'father_phone'               => 'father_phone',
 							'father_occupation'          => 'father_occupation',
 							'mother_name'                => 'mother_name',
 							'mother_phone'               => 'mother_phone',
 							'mother_occupation'          => 'mother_occupation',
+
+							// guardian
 							'if_guardian_is'             => 'guardian_is',
 							'guardian_is'                => 'guardian_is',
 							'guardian_name'              => 'guardian_name',
@@ -1432,6 +1506,8 @@ class Student extends Admin_Controller
 							'guardian_phone'             => 'guardian_phone',
 							'guardian_occupation'        => 'guardian_occupation',
 							'guardian_address'           => 'guardian_address',
+
+							// address
 							'current_village'            => 'current_village',
 							'current_ward_no'            => 'current_ward_no',
 							'current_post'               => 'current_post',
@@ -1444,6 +1520,8 @@ class Student extends Admin_Controller
 							'permanent_upazila'          => 'permanent_upazila',
 							'permanent_district'         => 'permanent_district',
 							'permanent_address'          => 'permanent_address',
+
+							// bank/docs
 							'bank_account_no'            => 'bank_account_no',
 							'bank_name'                  => 'bank_name',
 							'ifsc_code'                  => 'ifsc_code',
@@ -1451,6 +1529,8 @@ class Student extends Admin_Controller
 							'adhar_no'                   => 'adhar_no',
 							'local_identification_no'    => 'samagra_id',
 							'samagra_id'                 => 'samagra_id',
+
+							// misc
 							'rte'                        => 'rte',
 							'previous_school'            => 'previous_school',
 							'previous_school_details'    => 'previous_school',
@@ -1476,14 +1556,23 @@ class Student extends Admin_Controller
 								$db_field = $header_to_field[$header_name];
 								$value    = isset($result[$i][$col_index]) ? trim($result[$i][$col_index]) : '';
 
+								// resolve category label → id
 								if ($db_field === 'category_id' && $value !== '' && !is_numeric($value)) {
 									$cat   = $this->category_model->getCategoryByLabel($value);
 									$value = !empty($cat) ? $cat['id'] : null;
 								}
 
+								// resolve house label → id
 								if ($db_field === 'school_house_id' && $value !== '' && !is_numeric($value)) {
 									$house = $this->student_model->gethouselist_by_name($value);
 									$value = !empty($house) ? $house['id'] : null;
+								}
+
+								// normalize BD mobile numbers (prepend 0 if 10-digit with 1[3-9])
+								if (in_array($db_field, ['mobileno', 'father_phone', 'mother_phone', 'guardian_phone'], true)) {
+									if (preg_match('/^1[3-9][0-9]{8}$/', $value)) {
+										$value = '0' . $value;
+									}
 								}
 
 								$student_data[$db_field] = is_string($value) ? $this->encoding_lib->toUTF8($value) : $value;
@@ -1494,15 +1583,9 @@ class Student extends Admin_Controller
 								continue;
 							}
 
-							// Strict YYYY-MM-DD dates, else NULL
-							foreach (array('dob', 'measurement_date', 'admission_date') as $df) {
-								$v = isset($student_data[$df]) ? $student_data[$df] : '';
-								if ($v !== '' && $v !== null) {
-									$ts = strtotime($v);
-									$student_data[$df] = ($ts && date('Y-m-d', $ts) === $v) ? $v : null;
-								} else {
-									$student_data[$df] = null;
-								}
+							// Flexible date normalization (handles D/M/Y, Y-M-D, etc.)
+							foreach (['dob', 'measurement_date', 'admission_date'] as $field) {
+								$student_data[$field] = $this->normalizeImportDate($student_data[$field] ?? null);
 							}
 
 							// Default image by gender
